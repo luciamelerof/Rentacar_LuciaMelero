@@ -1,5 +1,8 @@
+import view.Login;
+import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("GestorAlquiler arrancando...");
+        SwingUtilities.invokeLater(() -> new Login().setVisible(true));
     }
 }

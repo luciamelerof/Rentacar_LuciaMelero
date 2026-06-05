@@ -24,7 +24,7 @@ public class VentanaPrincipal extends JFrame {
     // DAOs
     private final VehiculoDAOImpl vehiculoDAO = new VehiculoDAOImpl();
     private final AlquilerDAOImpl alquilerDAO = new AlquilerDAOImpl();
-    private final UsuarioDAOImpl usuarioDAO   = new UsuarioDAOImpl();
+    private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
     public VentanaPrincipal(Usuario usuario) {
         this.usuarioActual = usuario;
@@ -45,7 +45,7 @@ public class VentanaPrincipal extends JFrame {
         menuSesion.setForeground(Color.WHITE);
 
         JMenuItem itemCambiarPass = new JMenuItem("Cambiar contraseña");
-        JMenuItem itemCerrar      = new JMenuItem("Cerrar sesión");
+        JMenuItem itemCerrar = new JMenuItem("Cerrar sesión");
 
         itemCambiarPass.addActionListener(e -> cambiarPassword());
         itemCerrar.addActionListener(e -> {
@@ -60,7 +60,7 @@ public class VentanaPrincipal extends JFrame {
         JMenu menuTema = new JMenu("Tema");
         menuTema.setForeground(Color.WHITE);
         JMenuItem itemOscuro = new JMenuItem("Modo oscuro");
-        JMenuItem itemClaro  = new JMenuItem("Modo claro");
+        JMenuItem itemClaro = new JMenuItem("Modo claro");
         itemOscuro.addActionListener(e -> aplicarTema(true));
         itemClaro.addActionListener(e -> aplicarTema(false));
         menuTema.add(itemOscuro);
@@ -87,13 +87,13 @@ public class VentanaPrincipal extends JFrame {
         panelNav.add(lblMenu);
         panelNav.add(Box.createVerticalStrut(15));
 
-        JButton btnVehiculos  = crearBotonNav("🚗 Vehículos");
+        JButton btnVehiculos = crearBotonNav("🚗 Vehículos");
         JButton btnAlquileres = crearBotonNav("📋 Alquileres");
-        JButton btnUsuarios   = crearBotonNav("👥 Usuarios");
+        JButton btnUsuarios = crearBotonNav("👥 Usuarios");
 
-        btnVehiculos.addActionListener(e  -> cambiarModulo("vehiculos"));
+        btnVehiculos.addActionListener(e -> cambiarModulo("vehiculos"));
         btnAlquileres.addActionListener(e -> cambiarModulo("alquileres"));
-        btnUsuarios.addActionListener(e   -> cambiarModulo("usuarios"));
+        btnUsuarios.addActionListener(e -> cambiarModulo("usuarios"));
 
         panelNav.add(btnVehiculos);
         panelNav.add(Box.createVerticalStrut(8));
@@ -114,7 +114,10 @@ public class VentanaPrincipal extends JFrame {
 
         // ── PANEL CENTRAL (tabla) ──────────────────────────
         modeloTabla = new DefaultTableModel() {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         tabla = new JTable(modeloTabla);
         tabla.setBackground(new Color(49, 50, 68));
@@ -146,9 +149,18 @@ public class VentanaPrincipal extends JFrame {
     private void cambiarModulo(String modulo) {
         this.moduloActivo = modulo;
         switch (modulo) {
-            case "vehiculos"  -> { cargarTablaVehiculos();  mostrarFormVehiculo(null); }
-            case "alquileres" -> { cargarTablaAlquileres(); mostrarFormAlquiler(null); }
-            case "usuarios"   -> { cargarTablaUsuarios();   mostrarFormUsuario(null);  }
+            case "vehiculos" -> {
+                cargarTablaVehiculos();
+                mostrarFormVehiculo(null);
+            }
+            case "alquileres" -> {
+                cargarTablaAlquileres();
+                mostrarFormAlquiler(null);
+            }
+            case "usuarios" -> {
+                cargarTablaUsuarios();
+                mostrarFormUsuario(null);
+            }
         }
     }
 
@@ -166,10 +178,10 @@ public class VentanaPrincipal extends JFrame {
         modeloTabla.addColumn("Disponible");
 
         for (Vehiculo v : vehiculoDAO.listarTodos()) {
-            modeloTabla.addRow(new Object[]{
-                v.getId(), v.getMatricula(), v.getMarca(), v.getModelo(),
-                v.getAnio(), v.getCategoria(), v.getPrecioDia(),
-                v.isDisponible() ? "✅" : "❌"
+            modeloTabla.addRow(new Object[] {
+                    v.getId(), v.getMatricula(), v.getMarca(), v.getModelo(),
+                    v.getAnio(), v.getCategoria(), v.getPrecioDia(),
+                    v.isDisponible() ? "✅" : "❌"
             });
         }
     }
@@ -185,15 +197,16 @@ public class VentanaPrincipal extends JFrame {
         JLabel lblTitulo = new JLabel("Gestión Vehículos", SwingConstants.CENTER);
         lblTitulo.setForeground(new Color(137, 180, 250));
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 14));
-        gbc.gridy = 0; panelFormulario.add(lblTitulo, gbc);
+        gbc.gridy = 0;
+        panelFormulario.add(lblTitulo, gbc);
 
         gbc.gridwidth = 1;
         JTextField txtMatricula = campo(gbc, panelFormulario, 1, "Matrícula:");
-        JTextField txtMarca     = campo(gbc, panelFormulario, 2, "Marca:");
-        JTextField txtModelo    = campo(gbc, panelFormulario, 3, "Modelo:");
-        JTextField txtAnio      = campo(gbc, panelFormulario, 4, "Año:");
+        JTextField txtMarca = campo(gbc, panelFormulario, 2, "Marca:");
+        JTextField txtModelo = campo(gbc, panelFormulario, 3, "Modelo:");
+        JTextField txtAnio = campo(gbc, panelFormulario, 4, "Año:");
         JTextField txtCategoria = campo(gbc, panelFormulario, 5, "Categoría:");
-        JTextField txtPrecio    = campo(gbc, panelFormulario, 6, "€/día:");
+        JTextField txtPrecio = campo(gbc, panelFormulario, 6, "€/día:");
 
         // Si hay fila seleccionada, rellenar
         tabla.getSelectionModel().addListSelectionListener(e -> {
@@ -210,30 +223,37 @@ public class VentanaPrincipal extends JFrame {
 
         // Botones
         gbc.gridwidth = 2;
-        JButton btnNuevo    = crearBotonAccion("Nuevo",    new Color(137, 180, 250));
-        JButton btnGuardar  = crearBotonAccion("Guardar",  new Color(166, 227, 161));
+        JButton btnNuevo = crearBotonAccion("Nuevo", new Color(137, 180, 250));
+        JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
         JButton btnEliminar = crearBotonAccion("Eliminar", new Color(243, 139, 168));
 
-        gbc.gridy = 7; panelFormulario.add(btnNuevo,    gbc);
-        gbc.gridy = 8; panelFormulario.add(btnGuardar,  gbc);
-        gbc.gridy = 9; panelFormulario.add(btnEliminar, gbc);
+        gbc.gridy = 7;
+        panelFormulario.add(btnNuevo, gbc);
+        gbc.gridy = 8;
+        panelFormulario.add(btnGuardar, gbc);
+        gbc.gridy = 9;
+        panelFormulario.add(btnEliminar, gbc);
 
         btnNuevo.addActionListener(e -> {
-            txtMatricula.setText(""); txtMarca.setText(""); txtModelo.setText("");
-            txtAnio.setText(""); txtCategoria.setText(""); txtPrecio.setText("");
+            txtMatricula.setText("");
+            txtMarca.setText("");
+            txtModelo.setText("");
+            txtAnio.setText("");
+            txtCategoria.setText("");
+            txtPrecio.setText("");
             tabla.clearSelection();
         });
 
         btnGuardar.addActionListener(e -> {
             try {
                 Vehiculo nv = new Vehiculo(0,
-                    txtMatricula.getText().trim(),
-                    txtMarca.getText().trim(),
-                    txtModelo.getText().trim(),
-                    Integer.parseInt(txtAnio.getText().trim()),
-                    txtCategoria.getText().trim(),
-                    Double.parseDouble(txtPrecio.getText().trim()),
-                    true);
+                        txtMatricula.getText().trim(),
+                        txtMarca.getText().trim(),
+                        txtModelo.getText().trim(),
+                        Integer.parseInt(txtAnio.getText().trim()),
+                        txtCategoria.getText().trim(),
+                        Double.parseDouble(txtPrecio.getText().trim()),
+                        true);
 
                 int fila = tabla.getSelectedRow();
                 if (fila >= 0) {
@@ -252,9 +272,13 @@ public class VentanaPrincipal extends JFrame {
 
         btnEliminar.addActionListener(e -> {
             int fila = tabla.getSelectedRow();
-            if (fila < 0) { JOptionPane.showMessageDialog(this, "Selecciona un vehículo."); return; }
+            if (fila < 0) {
+                JOptionPane.showMessageDialog(this, "Selecciona un vehículo.");
+                return;
+            }
             int id = (int) modeloTabla.getValueAt(fila, 0);
-            int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar vehículo?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar vehículo?", "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 vehiculoDAO.eliminar(id);
                 cargarTablaVehiculos();
@@ -280,10 +304,10 @@ public class VentanaPrincipal extends JFrame {
         modeloTabla.addColumn("Estado");
 
         for (AlquilerDTO a : alquilerDAO.listarTodos()) {
-            modeloTabla.addRow(new Object[]{
-                a.getId(), a.getNombreCliente(), a.getVehiculo(),
-                a.getNombreEmpleado(), a.getFechaInicio(), a.getFechaFin(),
-                a.getPrecioTotal(), a.getEstado()
+            modeloTabla.addRow(new Object[] {
+                    a.getId(), a.getNombreCliente(), a.getVehiculo(),
+                    a.getNombreEmpleado(), a.getFechaInicio(), a.getFechaFin(),
+                    a.getPrecioTotal(), a.getEstado()
             });
         }
     }
@@ -299,22 +323,24 @@ public class VentanaPrincipal extends JFrame {
         JLabel lblTitulo = new JLabel("Gestión Alquileres", SwingConstants.CENTER);
         lblTitulo.setForeground(new Color(137, 180, 250));
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 14));
-        gbc.gridy = 0; panelFormulario.add(lblTitulo, gbc);
+        gbc.gridy = 0;
+        panelFormulario.add(lblTitulo, gbc);
 
         gbc.gridwidth = 1;
-        JTextField txtClienteId  = campo(gbc, panelFormulario, 1, "ID Cliente:");
+        JTextField txtClienteId = campo(gbc, panelFormulario, 1, "ID Cliente:");
         JTextField txtVehiculoId = campo(gbc, panelFormulario, 2, "ID Vehículo:");
         JTextField txtEmpleadoId = campo(gbc, panelFormulario, 3, "ID Empleado:");
-        JTextField txtInicio     = campo(gbc, panelFormulario, 4, "Inicio(yyyy-mm-dd):");
-        JTextField txtFin        = campo(gbc, panelFormulario, 5, "Fin(yyyy-mm-dd):");
-        JTextField txtTotal      = campo(gbc, panelFormulario, 6, "Total €:");
+        JTextField txtInicio = campo(gbc, panelFormulario, 4, "Inicio(yyyy-mm-dd):");
+        JTextField txtFin = campo(gbc, panelFormulario, 5, "Fin(yyyy-mm-dd):");
+        JTextField txtTotal = campo(gbc, panelFormulario, 6, "Total €:");
 
-        String[] estados = {"activo", "finalizado", "cancelado"};
+        String[] estados = { "activo", "finalizado", "cancelado" };
         JComboBox<String> cmbEstado = new JComboBox<>(estados);
         cmbEstado.setBackground(new Color(49, 50, 68));
         cmbEstado.setForeground(Color.WHITE);
         gbc.gridwidth = 1;
-        gbc.gridx = 0; gbc.gridy = 7;
+        gbc.gridx = 0;
+        gbc.gridy = 7;
         JLabel lblEstado = new JLabel("Estado:");
         lblEstado.setForeground(Color.WHITE);
         lblEstado.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -336,18 +362,24 @@ public class VentanaPrincipal extends JFrame {
         });
 
         gbc.gridwidth = 2;
-        JButton btnNuevo    = crearBotonAccion("Nuevo",    new Color(137, 180, 250));
-        JButton btnGuardar  = crearBotonAccion("Guardar",  new Color(166, 227, 161));
+        JButton btnNuevo = crearBotonAccion("Nuevo", new Color(137, 180, 250));
+        JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
         JButton btnEliminar = crearBotonAccion("Eliminar", new Color(243, 139, 168));
 
-        gbc.gridy = 8;  panelFormulario.add(btnNuevo,    gbc);
-        gbc.gridy = 9;  panelFormulario.add(btnGuardar,  gbc);
-        gbc.gridy = 10; panelFormulario.add(btnEliminar, gbc);
+        gbc.gridy = 8;
+        panelFormulario.add(btnNuevo, gbc);
+        gbc.gridy = 9;
+        panelFormulario.add(btnGuardar, gbc);
+        gbc.gridy = 10;
+        panelFormulario.add(btnEliminar, gbc);
 
         btnNuevo.addActionListener(e -> {
-            txtClienteId.setText(""); txtVehiculoId.setText("");
-            txtEmpleadoId.setText(""); txtInicio.setText(LocalDate.now().toString());
-            txtFin.setText(""); txtTotal.setText("");
+            txtClienteId.setText("");
+            txtVehiculoId.setText("");
+            txtEmpleadoId.setText("");
+            txtInicio.setText(LocalDate.now().toString());
+            txtFin.setText("");
+            txtTotal.setText("");
             tabla.clearSelection();
         });
 
@@ -355,15 +387,14 @@ public class VentanaPrincipal extends JFrame {
             try {
                 int fila = tabla.getSelectedRow();
                 Alquiler alq = new Alquiler(
-                    fila >= 0 ? (int) modeloTabla.getValueAt(fila, 0) : 0,
-                    Integer.parseInt(txtClienteId.getText().trim()),
-                    Integer.parseInt(txtVehiculoId.getText().trim()),
-                    Integer.parseInt(txtEmpleadoId.getText().trim()),
-                    LocalDate.parse(txtInicio.getText().trim()),
-                    LocalDate.parse(txtFin.getText().trim()),
-                    Double.parseDouble(txtTotal.getText().trim()),
-                    (String) cmbEstado.getSelectedItem()
-                );
+                        fila >= 0 ? (int) modeloTabla.getValueAt(fila, 0) : 0,
+                        Integer.parseInt(txtClienteId.getText().trim()),
+                        Integer.parseInt(txtVehiculoId.getText().trim()),
+                        Integer.parseInt(txtEmpleadoId.getText().trim()),
+                        LocalDate.parse(txtInicio.getText().trim()),
+                        LocalDate.parse(txtFin.getText().trim()),
+                        Double.parseDouble(txtTotal.getText().trim()),
+                        (String) cmbEstado.getSelectedItem());
                 if (fila >= 0) {
                     alquilerDAO.actualizar(alq);
                     JOptionPane.showMessageDialog(this, "Alquiler actualizado.");
@@ -379,9 +410,13 @@ public class VentanaPrincipal extends JFrame {
 
         btnEliminar.addActionListener(e -> {
             int fila = tabla.getSelectedRow();
-            if (fila < 0) { JOptionPane.showMessageDialog(this, "Selecciona un alquiler."); return; }
+            if (fila < 0) {
+                JOptionPane.showMessageDialog(this, "Selecciona un alquiler.");
+                return;
+            }
             int id = (int) modeloTabla.getValueAt(fila, 0);
-            int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar alquiler?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar alquiler?", "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 alquilerDAO.eliminar(id);
                 cargarTablaAlquileres();
@@ -406,9 +441,9 @@ public class VentanaPrincipal extends JFrame {
         modeloTabla.addColumn("Rol");
 
         for (Usuario u : usuarioDAO.listarTodos()) {
-            modeloTabla.addRow(new Object[]{
-                u.getId(), u.getUsername(), u.getNombre(),
-                u.getApellidos(), u.getEmail(), u.getDni(), u.getRol()
+            modeloTabla.addRow(new Object[] {
+                    u.getId(), u.getUsername(), u.getNombre(),
+                    u.getApellidos(), u.getEmail(), u.getDni(), u.getRol()
             });
         }
     }
@@ -424,13 +459,14 @@ public class VentanaPrincipal extends JFrame {
         JLabel lblTitulo = new JLabel("Gestión Usuarios", SwingConstants.CENTER);
         lblTitulo.setForeground(new Color(137, 180, 250));
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 14));
-        gbc.gridy = 0; panelFormulario.add(lblTitulo, gbc);
+        gbc.gridy = 0;
+        panelFormulario.add(lblTitulo, gbc);
 
         gbc.gridwidth = 1;
-        JTextField txtNombre    = campo(gbc, panelFormulario, 1, "Nombre:");
+        JTextField txtNombre = campo(gbc, panelFormulario, 1, "Nombre:");
         JTextField txtApellidos = campo(gbc, panelFormulario, 2, "Apellidos:");
-        JTextField txtEmail     = campo(gbc, panelFormulario, 3, "Email:");
-        JTextField txtDni       = campo(gbc, panelFormulario, 4, "DNI:");
+        JTextField txtEmail = campo(gbc, panelFormulario, 3, "Email:");
+        JTextField txtDni = campo(gbc, panelFormulario, 4, "DNI:");
 
         tabla.getSelectionModel().addListSelectionListener(e -> {
             int fila = tabla.getSelectedRow();
@@ -443,24 +479,28 @@ public class VentanaPrincipal extends JFrame {
         });
 
         gbc.gridwidth = 2;
-        JButton btnGuardar  = crearBotonAccion("Guardar",  new Color(166, 227, 161));
+        JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
         JButton btnEliminar = crearBotonAccion("Eliminar", new Color(243, 139, 168));
 
-        gbc.gridy = 5; panelFormulario.add(btnGuardar,  gbc);
-        gbc.gridy = 6; panelFormulario.add(btnEliminar, gbc);
+        gbc.gridy = 5;
+        panelFormulario.add(btnGuardar, gbc);
+        gbc.gridy = 6;
+        panelFormulario.add(btnEliminar, gbc);
 
         btnGuardar.addActionListener(e -> {
             int fila = tabla.getSelectedRow();
-            if (fila < 0) { JOptionPane.showMessageDialog(this, "Selecciona un usuario."); return; }
+            if (fila < 0) {
+                JOptionPane.showMessageDialog(this, "Selecciona un usuario.");
+                return;
+            }
             Usuario editado = new Usuario(
-                (int) modeloTabla.getValueAt(fila, 0),
-                modeloTabla.getValueAt(fila, 1).toString(),
-                "", txtEmail.getText().trim(),
-                txtNombre.getText().trim(),
-                txtApellidos.getText().trim(),
-                txtDni.getText().trim(),
-                modeloTabla.getValueAt(fila, 6).toString()
-            );
+                    (int) modeloTabla.getValueAt(fila, 0),
+                    modeloTabla.getValueAt(fila, 1).toString(),
+                    "", txtEmail.getText().trim(),
+                    txtNombre.getText().trim(),
+                    txtApellidos.getText().trim(),
+                    txtDni.getText().trim(),
+                    modeloTabla.getValueAt(fila, 6).toString());
             usuarioDAO.actualizar(editado);
             cargarTablaUsuarios();
             JOptionPane.showMessageDialog(this, "Usuario actualizado.");
@@ -468,9 +508,13 @@ public class VentanaPrincipal extends JFrame {
 
         btnEliminar.addActionListener(e -> {
             int fila = tabla.getSelectedRow();
-            if (fila < 0) { JOptionPane.showMessageDialog(this, "Selecciona un usuario."); return; }
+            if (fila < 0) {
+                JOptionPane.showMessageDialog(this, "Selecciona un usuario.");
+                return;
+            }
             int id = (int) modeloTabla.getValueAt(fila, 0);
-            int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar usuario?", "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 usuarioDAO.eliminar(id);
                 cargarTablaUsuarios();
@@ -486,14 +530,12 @@ public class VentanaPrincipal extends JFrame {
     private void cambiarPassword() {
         JPasswordField txtNueva = new JPasswordField();
         int ok = JOptionPane.showConfirmDialog(this,
-            new Object[]{"Nueva contraseña:", txtNueva},
-            "Cambiar contraseña", JOptionPane.OK_CANCEL_OPTION);
+                new Object[] { "Nueva contraseña:", txtNueva },
+                "Cambiar contraseña", JOptionPane.OK_CANCEL_OPTION);
         if (ok == JOptionPane.OK_OPTION) {
             String nueva = new String(txtNueva.getPassword()).trim();
             if (!nueva.isEmpty()) {
-                String hash = at.favre.lib.crypto.bcrypt.BCrypt.withDefaults()
-                    .hashToString(10, nueva.toCharArray());
-                usuarioActual.setPassword(hash);
+                usuarioActual.setPassword(nueva);
                 usuarioDAO.actualizar(usuarioActual);
                 JOptionPane.showMessageDialog(this, "Contraseña actualizada.");
             }
@@ -502,8 +544,8 @@ public class VentanaPrincipal extends JFrame {
 
     // ── TEMA ───────────────────────────────────────────────
     private void aplicarTema(boolean oscuro) {
-        Color fondo  = oscuro ? new Color(30, 30, 46)  : new Color(240, 240, 245);
-        Color texto  = oscuro ? Color.WHITE             : Color.BLACK;
+        Color fondo = oscuro ? new Color(30, 30, 46) : new Color(240, 240, 245);
+        Color texto = oscuro ? Color.WHITE : Color.BLACK;
         tabla.setBackground(oscuro ? new Color(49, 50, 68) : Color.WHITE);
         tabla.setForeground(texto);
         getContentPane().setBackground(fondo);
@@ -535,13 +577,15 @@ public class VentanaPrincipal extends JFrame {
         JLabel lbl = new JLabel(label);
         lbl.setForeground(Color.WHITE);
         lbl.setFont(new Font("Arial", Font.PLAIN, 12));
-        gbc.gridx = 0; gbc.gridy = fila;
+        gbc.gridx = 0;
+        gbc.gridy = fila;
         panel.add(lbl, gbc);
         JTextField txt = new JTextField(10);
         txt.setBackground(new Color(49, 50, 68));
         txt.setForeground(Color.WHITE);
         txt.setCaretColor(Color.WHITE);
-        gbc.gridx = 1; gbc.gridy = fila;
+        gbc.gridx = 1;
+        gbc.gridy = fila;
         panel.add(txt, gbc);
         return txt;
     }
