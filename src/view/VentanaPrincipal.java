@@ -82,14 +82,14 @@ public class VentanaPrincipal extends JFrame {
 
         JLabel lblMenu = new JLabel("MÓDULOS");
         lblMenu.setForeground(new Color(137, 180, 250));
-        lblMenu.setFont(new Font("Arial", Font.BOLD, 12));
+        lblMenu.setFont(new Font("Garamond", Font.BOLD, 12));
         lblMenu.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelNav.add(lblMenu);
         panelNav.add(Box.createVerticalStrut(15));
 
-        JButton btnVehiculos = crearBotonNav("🚗 Vehículos");
-        JButton btnAlquileres = crearBotonNav("📋 Alquileres");
-        JButton btnUsuarios = crearBotonNav("👥 Usuarios");
+        JButton btnVehiculos = crearBotonNav("Vehículos");
+        JButton btnAlquileres = crearBotonNav("Alquileres");
+        JButton btnUsuarios = crearBotonNav("Usuarios");
 
         btnVehiculos.addActionListener(e -> cambiarModulo("vehiculos"));
         btnAlquileres.addActionListener(e -> cambiarModulo("alquileres"));
@@ -106,7 +106,7 @@ public class VentanaPrincipal extends JFrame {
         JLabel lblUsuario = new JLabel("<html><center>" + usuarioActual.getNombre()
                 + "<br><small>" + usuarioActual.getRol() + "</small></center></html>");
         lblUsuario.setForeground(new Color(166, 227, 161));
-        lblUsuario.setFont(new Font("Arial", Font.PLAIN, 12));
+        lblUsuario.setFont(new Font("Garamond", Font.PLAIN, 12));
         lblUsuario.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelNav.add(lblUsuario);
 
@@ -122,7 +122,7 @@ public class VentanaPrincipal extends JFrame {
         tabla = new JTable(modeloTabla);
         tabla.setBackground(new Color(49, 50, 68));
         tabla.setForeground(Color.WHITE);
-        tabla.setFont(new Font("Arial", Font.PLAIN, 13));
+        tabla.setFont(new Font("Garamond", Font.PLAIN, 13));
         tabla.setRowHeight(26);
         tabla.getTableHeader().setBackground(new Color(137, 180, 250));
         tabla.getTableHeader().setForeground(new Color(30, 30, 46));
@@ -196,7 +196,7 @@ public class VentanaPrincipal extends JFrame {
 
         JLabel lblTitulo = new JLabel("Gestión Vehículos", SwingConstants.CENTER);
         lblTitulo.setForeground(new Color(137, 180, 250));
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 14));
+        lblTitulo.setFont(new Font("Garamond", Font.BOLD, 14));
         gbc.gridy = 0;
         panelFormulario.add(lblTitulo, gbc);
 
@@ -307,7 +307,7 @@ public class VentanaPrincipal extends JFrame {
 
         JLabel lblResultado = new JLabel("Selecciona un vehículo", SwingConstants.CENTER);
         lblResultado.setForeground(new Color(166, 227, 161));
-        lblResultado.setFont(new Font("Arial", Font.BOLD, 12));
+        lblResultado.setFont(new Font("Garamond", Font.BOLD, 12));
         gbc.gridy = 12;
         panelFormulario.add(lblResultado, gbc);
 
@@ -375,7 +375,7 @@ public class VentanaPrincipal extends JFrame {
 
         JLabel lblTitulo = new JLabel("Gestión Alquileres", SwingConstants.CENTER);
         lblTitulo.setForeground(new Color(137, 180, 250));
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 14));
+        lblTitulo.setFont(new Font("Garamond", Font.BOLD, 14));
         gbc.gridy = 0;
         panelFormulario.add(lblTitulo, gbc);
 
@@ -396,7 +396,7 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridy = 7;
         JLabel lblEstado = new JLabel("Estado:");
         lblEstado.setForeground(Color.WHITE);
-        lblEstado.setFont(new Font("Arial", Font.PLAIN, 12));
+        lblEstado.setFont(new Font("Garamond", Font.PLAIN, 12));
         panelFormulario.add(lblEstado, gbc);
         gbc.gridx = 1;
         panelFormulario.add(cmbEstado, gbc);
@@ -515,7 +515,7 @@ public class VentanaPrincipal extends JFrame {
 
         JLabel lblTitulo = new JLabel("Gestión Usuarios", SwingConstants.CENTER);
         lblTitulo.setForeground(new Color(137, 180, 250));
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 14));
+        lblTitulo.setFont(new Font("Garamond", Font.BOLD, 14));
         gbc.gridy = 0;
         panelFormulario.add(lblTitulo, gbc);
 
@@ -592,8 +592,7 @@ public class VentanaPrincipal extends JFrame {
         if (ok == JOptionPane.OK_OPTION) {
             String nueva = new String(txtNueva.getPassword()).trim();
             if (!nueva.isEmpty()) {
-                usuarioActual.setPassword(nueva);
-                usuarioDAO.actualizar(usuarioActual);
+                usuarioDAO.actualizarPassword(usuarioActual.getId(), nueva);
                 JOptionPane.showMessageDialog(this, "Contraseña actualizada.");
             }
         }
@@ -612,7 +611,7 @@ public class VentanaPrincipal extends JFrame {
     // ── HELPERS ────────────────────────────────────────────
     private JButton crearBotonNav(String texto) {
         JButton btn = new JButton(texto);
-        btn.setFont(new Font("Arial", Font.PLAIN, 13));
+        btn.setFont(new Font("Garamond", Font.PLAIN, 13));
         btn.setBackground(new Color(49, 50, 68));
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
@@ -623,7 +622,7 @@ public class VentanaPrincipal extends JFrame {
 
     private JButton crearBotonAccion(String texto, Color color) {
         JButton btn = new JButton(texto);
-        btn.setFont(new Font("Arial", Font.BOLD, 13));
+        btn.setFont(new Font("Garamond", Font.BOLD, 13));
         btn.setBackground(color);
         btn.setForeground(new Color(30, 30, 46));
         btn.setFocusPainted(false);
@@ -633,7 +632,7 @@ public class VentanaPrincipal extends JFrame {
     private JTextField campo(GridBagConstraints gbc, JPanel panel, int fila, String label) {
         JLabel lbl = new JLabel(label);
         lbl.setForeground(Color.WHITE);
-        lbl.setFont(new Font("Arial", Font.PLAIN, 12));
+        lbl.setFont(new Font("Garamond", Font.PLAIN, 12));
         gbc.gridx = 0;
         gbc.gridy = fila;
         panel.add(lbl, gbc);

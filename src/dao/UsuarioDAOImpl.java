@@ -191,6 +191,20 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         }
     }
 
+    public void actualizarPassword(int id, String nuevaPassword) {
+        String sql = "UPDATE usuarios SET password = ? WHERE id = ?";
+        try (Connection con = ConexionDB.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nuevaPassword);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar contraseña: " + e.getMessage());
+        }
+    }
+
     @Override
     public void eliminar(int id) {
         String sql = "DELETE FROM usuarios WHERE id=?";
