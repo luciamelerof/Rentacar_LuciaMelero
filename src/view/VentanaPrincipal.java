@@ -286,6 +286,55 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
+        // Panel conversor de divisas
+        gbc.gridwidth = 2;
+        JLabel lblConversor = new JLabel("── Conversor divisas ──", SwingConstants.CENTER);
+        lblConversor.setForeground(new Color(250, 179, 135));
+        lblConversor.setFont(new Font("Arial", Font.BOLD, 11));
+        gbc.gridy = 10;
+        panelFormulario.add(lblConversor, gbc);
+
+        String[] divisas = { "USD", "GBP", "JPY", "CHF", "MXN" };
+        JComboBox<String> cmbDivisa = new JComboBox<>(divisas);
+        cmbDivisa.setBackground(new Color(49, 50, 68));
+        cmbDivisa.setForeground(Color.WHITE);
+        gbc.gridy = 11;
+        panelFormulario.add(cmbDivisa, gbc);
+
+        JLabel lblResultado = new JLabel("Selecciona un vehículo", SwingConstants.CENTER);
+        lblResultado.setForeground(new Color(166, 227, 161));
+        lblResultado.setFont(new Font("Arial", Font.BOLD, 12));
+        gbc.gridy = 12;
+        panelFormulario.add(lblResultado, gbc);
+
+        JButton btnConvertir = crearBotonAccion("Convertir precio", new Color(250, 179, 135));
+        gbc.gridy = 13;
+        panelFormulario.add(btnConvertir, gbc);
+
+        btnConvertir.addActionListener(e -> {
+            int fila = tabla.getSelectedRow();
+            if (fila < 0) {
+                JOptionPane.showMessageDialog(this, "Selecciona un vehículo primero.");
+                return;
+            }
+            double precioDia = Double.parseDouble(
+                    modeloTabla.getValueAt(fila, 6).toString());
+            String divisa = (String) cmbDivisa.getSelectedItem();
+            lblResultado.setText("Calculando...");
+
+            // Llamada en hilo separado para no bloquear la UI
+            new Thread(() -> {
+                double resultado = api.ExchangeRateService.convertir(precioDia, divisa);
+                SwingUtilities.invokeLater(() -> {
+                    if (resultado > 0) {
+                        lblResultado.setText(precioDia + " € = " + resultado + " " + divisa);
+                    } else {
+                        lblResultado.setText("Error al obtener tasa");
+                    }
+                });
+            }).start();
+        });
+
         panelFormulario.revalidate();
         panelFormulario.repaint();
     }
