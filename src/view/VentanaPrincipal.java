@@ -227,6 +227,9 @@ public class VentanaPrincipal extends JFrame {
         JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
         JButton btnEliminar = crearBotonAccion("Eliminar", new Color(243, 139, 168));
 
+        // Restricción: desactiva el botón eliminar si es cliente
+        btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
+
         gbc.gridy = 7;
         panelFormulario.add(btnNuevo, gbc);
         gbc.gridy = 8;
@@ -414,6 +417,9 @@ public class VentanaPrincipal extends JFrame {
         JButton btnNuevo = crearBotonAccion("Nuevo", new Color(137, 180, 250));
         JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
         JButton btnEliminar = crearBotonAccion("Eliminar", new Color(243, 139, 168));
+
+        // Restricción: desactiva el botón eliminar si es cliente
+        btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
 
         gbc.gridy = 8;
         panelFormulario.add(btnNuevo, gbc);
