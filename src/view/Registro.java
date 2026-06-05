@@ -38,7 +38,7 @@ public class Registro extends JFrame {
 
         // Título
         JLabel lblTitulo = new JLabel("Nuevo Usuario", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
+        lblTitulo.setFont(new Font("Garamond", Font.BOLD, 32));
         lblTitulo.setForeground(new Color(137, 180, 250));
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         panel.add(lblTitulo, BorderLayout.NORTH);
@@ -96,15 +96,15 @@ public class Registro extends JFrame {
         panelBotones.setBackground(new Color(30, 30, 46));
 
         JButton btnGuardar = new JButton("Registrar");
-        btnGuardar.setFont(new Font("Arial", Font.BOLD, 14));
+        btnGuardar.setFont(new Font("Garamond", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(166, 227, 161));
         btnGuardar.setForeground(new Color(30, 30, 46));
         btnGuardar.setFocusPainted(false);
         btnGuardar.setPreferredSize(new Dimension(110, 35));
 
         JButton btnVolver = new JButton("Volver");
-        btnVolver.setFont(new Font("Arial", Font.PLAIN, 13));
-        btnVolver.setBackground(new Color(49, 50, 68));
+        btnVolver.setFont(new Font("Garamond", Font.PLAIN, 13));
+        btnVolver.setBackground(new Color(255, 0, 40));
         btnVolver.setForeground(Color.WHITE);
         btnVolver.setFocusPainted(false);
         btnVolver.setPreferredSize(new Dimension(110, 35));
@@ -210,7 +210,7 @@ public class Registro extends JFrame {
     private JLabel crearLabel(String texto) {
         JLabel lbl = new JLabel(texto);
         lbl.setForeground(Color.WHITE);
-        lbl.setFont(new Font("Arial", Font.PLAIN, 13));
+        lbl.setFont(new Font("Garamond", Font.PLAIN, 13));
         return lbl;
     }
 }

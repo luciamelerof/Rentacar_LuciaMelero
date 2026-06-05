@@ -41,6 +41,7 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al insertar alquiler: " + e.getMessage());
+            e.printStackTrace();
             if (con != null) {
                 try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             }

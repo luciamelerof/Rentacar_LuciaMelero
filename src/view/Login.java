@@ -30,8 +30,8 @@ public class Login extends JFrame {
         panel.setBackground(new Color(30, 30, 46));
 
         // Panel título
-        JLabel lblTitulo = new JLabel("🚗 RentaCar", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 28));
+        JLabel lblTitulo = new JLabel("RentaCar - Alquiler", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Garamond", Font.BOLD, 35));
         lblTitulo.setForeground(new Color(137, 180, 250));
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(25, 0, 10, 0));
         panel.add(lblTitulo, BorderLayout.NORTH);
@@ -46,24 +46,24 @@ public class Login extends JFrame {
         // Username
         JLabel lblUser = new JLabel("Usuario:");
         lblUser.setForeground(Color.WHITE);
-        lblUser.setFont(new Font("Arial", Font.PLAIN, 14));
+        lblUser.setFont(new Font("Garamond", Font.PLAIN, 14));
         gbc.gridx = 0; gbc.gridy = 0;
         formulario.add(lblUser, gbc);
 
         txtUsername = new JTextField(18);
-        txtUsername.setFont(new Font("Arial", Font.PLAIN, 14));
+        txtUsername.setFont(new Font("Garamond", Font.PLAIN, 14));
         gbc.gridx = 1; gbc.gridy = 0;
         formulario.add(txtUsername, gbc);
 
         // Password
         JLabel lblPass = new JLabel("Contraseña:");
         lblPass.setForeground(Color.WHITE);
-        lblPass.setFont(new Font("Arial", Font.PLAIN, 14));
+        lblPass.setFont(new Font("Garamond", Font.PLAIN, 14));
         gbc.gridx = 0; gbc.gridy = 1;
         formulario.add(lblPass, gbc);
 
         txtPassword = new JPasswordField(18);
-        txtPassword.setFont(new Font("Arial", Font.PLAIN, 14));
+        txtPassword.setFont(new Font("Garamond", Font.PLAIN, 14));
         gbc.gridx = 1; gbc.gridy = 1;
         formulario.add(txtPassword, gbc);
 
@@ -74,14 +74,14 @@ public class Login extends JFrame {
         panelBotones.setBackground(new Color(30, 30, 46));
 
         btnEntrar = new JButton("Entrar");
-        btnEntrar.setFont(new Font("Arial", Font.BOLD, 14));
+        btnEntrar.setFont(new Font("Garamond", Font.BOLD, 14));
         btnEntrar.setBackground(new Color(137, 180, 250));
         btnEntrar.setForeground(new Color(30, 30, 46));
         btnEntrar.setFocusPainted(false);
         btnEntrar.setPreferredSize(new Dimension(110, 35));
 
         btnRegistro = new JButton("Registrarse");
-        btnRegistro.setFont(new Font("Arial", Font.PLAIN, 13));
+        btnRegistro.setFont(new Font("Garamond", Font.PLAIN, 13));
         btnRegistro.setBackground(new Color(49, 50, 68));
         btnRegistro.setForeground(Color.WHITE);
         btnRegistro.setFocusPainted(false);
@@ -122,7 +122,7 @@ public class Login extends JFrame {
 
         if (usuario != null) {
             JOptionPane.showMessageDialog(this,
-                "Bienvenido/a, " + usuario.getNombre() + "!",
+                "¡Bienvenido/a, " + usuario.getNombre() + "!",
                 "Acceso correcto", JOptionPane.INFORMATION_MESSAGE);
             new VentanaPrincipal(usuario).setVisible(true);
             dispose();

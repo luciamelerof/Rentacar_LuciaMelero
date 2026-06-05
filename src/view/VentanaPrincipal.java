@@ -181,7 +181,7 @@ public class VentanaPrincipal extends JFrame {
             modeloTabla.addRow(new Object[] {
                     v.getId(), v.getMatricula(), v.getMarca(), v.getModelo(),
                     v.getAnio(), v.getCategoria(), v.getPrecioDia(),
-                    v.isDisponible() ? "✅" : "❌"
+                    v.isDisponible() ? "SÍ" : "NO"
             });
         }
     }
@@ -245,6 +245,7 @@ public class VentanaPrincipal extends JFrame {
             txtCategoria.setText("");
             txtPrecio.setText("");
             tabla.clearSelection();
+            cargarTablaVehiculos();
         });
 
         btnGuardar.addActionListener(e -> {
@@ -436,6 +437,7 @@ public class VentanaPrincipal extends JFrame {
             txtFin.setText("");
             txtTotal.setText("");
             tabla.clearSelection();
+            cargarTablaAlquileres();
         });
 
         btnGuardar.addActionListener(e -> {
