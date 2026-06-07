@@ -10,6 +10,22 @@ import java.util.List;
 
 public class UsuarioDAOImpl implements IUsuarioDAO {
 
+    // Convierte una fila del ResultSet en un objeto Usuario. 
+    // Se llama desde varios métodos del DAO, por lo que se usa 
+    // para no repetir el mismo código de mapeo en cada uno.
+    private Usuario mapearUsuario(ResultSet rs) throws SQLException {
+        return new Usuario(
+                rs.getInt("id"),
+                rs.getString("username"),
+                rs.getString("password"),
+                rs.getString("email"),
+                rs.getString("nombre"),
+                rs.getString("apellidos"),
+                rs.getString("dni"),
+                rs.getString("rol"));
+    }
+
+    // Busca en la BD el Usuario, si existe lo devuelve, y sino, devuelve null
     @Override
     public Usuario validar(String username, String password) {
         String sql = "SELECT * FROM usuarios WHERE username = ?";
@@ -93,6 +109,7 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         }
     }
 
+    // Insertar un empleado en la tabla usuario y empleado
     @Override
     public void registrarEmpleado(Empleado empleado) {
         String sqlUsuario = "INSERT INTO usuarios (username, password, email, nombre, apellidos, dni, rol) VALUES (?,?,?,?,?,?,'empleado')";
@@ -103,6 +120,7 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
             con = ConexionDB.getConnection();
             con.setAutoCommit(false);
 
+            // hash = contraseña del Usuario
             String hash = empleado.getPassword();
 
             try (PreparedStatement ps = con.prepareStatement(sqlUsuario, Statement.RETURN_GENERATED_KEYS)) {
@@ -151,6 +169,7 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         }
     }
 
+    // Devuelve todos los usuarios de la base de datos como una lista de objetos Usuario.
     @Override
     public List<Usuario> listarTodos() {
         List<Usuario> lista = new ArrayList<>();
@@ -168,6 +187,7 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         return lista;
     }
 
+    // Actualizar de la tabla usuarios el email, nombre, apellidos y dni
     @Override
     public void actualizar(Usuario usuario) {
         String sql = "UPDATE usuarios SET email=?, nombre=?, apellidos=?, dni=? WHERE id=?";
@@ -186,6 +206,7 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         }
     }
 
+    // Actualizar contraseña del usuario (opción arriba a a izquierda)
     public void actualizarPassword(int id, String nuevaPassword) {
         String sql = "UPDATE usuarios SET password = ? WHERE id = ?";
         try (Connection con = ConexionDB.getConnection();
@@ -200,6 +221,7 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         }
     }
 
+    // Eliminar usuario
     @Override
     public void eliminar(int id) {
         String sql = "DELETE FROM usuarios WHERE id=?";
@@ -212,17 +234,5 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         } catch (SQLException e) {
             System.err.println("Error al eliminar usuario: " + e.getMessage());
         }
-    }
-
-    private Usuario mapearUsuario(ResultSet rs) throws SQLException {
-        return new Usuario(
-                rs.getInt("id"),
-                rs.getString("username"),
-                rs.getString("password"),
-                rs.getString("email"),
-                rs.getString("nombre"),
-                rs.getString("apellidos"),
-                rs.getString("dni"),
-                rs.getString("rol"));
     }
 }

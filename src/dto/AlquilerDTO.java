@@ -2,6 +2,9 @@ package dto;
 
 import java.time.LocalDate;
 
+// Clase para la interfaz para evitar que el Usuario pueda tener
+// información de los alquileres no deseada, como los IDs.
+
 public class AlquilerDTO {
     private int id;
     private String nombreCliente;

@@ -10,6 +10,7 @@ import java.util.List;
 
 public class AlquilerDAOImpl implements IAlquilerDAO {
 
+    // Insertar un alquiler en la BD
     @Override
     public void insertar(Alquiler alquiler) {
         String sql = "INSERT INTO alquileres (cliente_id, vehiculo_id, empleado_id, fecha_inicio, fecha_fin, precio_total, estado) VALUES (?,?,?,?,?,?,?)";
@@ -61,6 +62,7 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
         }
     }
 
+    // Actualizar alquiler
     @Override
     public void actualizar(Alquiler alquiler) {
         String sql = "UPDATE alquileres SET cliente_id=?, vehiculo_id=?, empleado_id=?, fecha_inicio=?, fecha_fin=?, precio_total=?, estado=? WHERE id=?";
@@ -114,6 +116,7 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
         }
     }
 
+    // Eliminar alquiler 
     @Override
     public void eliminar(int id) {
         String sql = "DELETE FROM alquileres WHERE id=?";
@@ -128,6 +131,11 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
         }
     }
 
+    // Este listarTodos(), en lugar de devolver IDs numéricos, devuelve
+    // los nombres reales de cliente, vehículo y empleado usando JOINs.
+    
+    // Se usa AlquilerDTO porque en la interfaz solo se quiere mostrar
+    // nombres legibles, no los IDs del vehículo, cliente...
     @Override
     public List<AlquilerDTO> listarTodos() {
         List<AlquilerDTO> lista = new ArrayList<>();
@@ -168,6 +176,9 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
         return lista;
     }
 
+    // Buscar un alquiler por ID, se usa en el listener de mostrarFormAlquiler
+    // en VentanaPrincipal para que devuelva en los paneles los datos del alquiler 
+    // seleccionado.
     @Override
     public Alquiler buscarPorId(int id) {
         String sql = "SELECT * FROM alquileres WHERE id = ?";
