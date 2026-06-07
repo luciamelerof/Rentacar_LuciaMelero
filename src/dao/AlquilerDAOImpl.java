@@ -43,11 +43,20 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
             System.err.println("Error al insertar alquiler: " + e.getMessage());
             e.printStackTrace();
             if (con != null) {
-                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         } finally {
             if (con != null) {
-                try { con.setAutoCommit(true); con.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
@@ -87,11 +96,20 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
         } catch (SQLException e) {
             System.err.println("Error al actualizar alquiler: " + e.getMessage());
             if (con != null) {
-                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         } finally {
             if (con != null) {
-                try { con.setAutoCommit(true); con.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
@@ -100,7 +118,7 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
     public void eliminar(int id) {
         String sql = "DELETE FROM alquileres WHERE id=?";
         try (Connection con = ConexionDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -130,24 +148,48 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
                 """;
 
         try (Connection con = ConexionDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 lista.add(new AlquilerDTO(
-                    rs.getInt("id"),
-                    rs.getString("cliente"),
-                    rs.getString("vehiculo"),
-                    rs.getString("empleado"),
-                    rs.getDate("fecha_inicio").toLocalDate(),
-                    rs.getDate("fecha_fin").toLocalDate(),
-                    rs.getDouble("precio_total"),
-                    rs.getString("estado")
-                ));
+                        rs.getInt("id"),
+                        rs.getString("cliente"),
+                        rs.getString("vehiculo"),
+                        rs.getString("empleado"),
+                        rs.getDate("fecha_inicio").toLocalDate(),
+                        rs.getDate("fecha_fin").toLocalDate(),
+                        rs.getDouble("precio_total"),
+                        rs.getString("estado")));
             }
         } catch (SQLException e) {
             System.err.println("Error al listar alquileres: " + e.getMessage());
         }
         return lista;
+    }
+
+    @Override
+    public Alquiler buscarPorId(int id) {
+        String sql = "SELECT * FROM alquileres WHERE id = ?";
+        try (Connection con = ConexionDB.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Alquiler(
+                            rs.getInt("id"),
+                            rs.getInt("cliente_id"),
+                            rs.getInt("vehiculo_id"),
+                            rs.getInt("empleado_id"),
+                            rs.getDate("fecha_inicio").toLocalDate(),
+                            rs.getDate("fecha_fin").toLocalDate(),
+                            rs.getDouble("precio_total"),
+                            rs.getString("estado"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

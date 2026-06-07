@@ -9,4 +9,5 @@ public interface IAlquilerDAO {
     void actualizar(Alquiler alquiler);
     void eliminar(int id);
     List<AlquilerDTO> listarTodos();
+    Alquiler buscarPorId(int id);
 }

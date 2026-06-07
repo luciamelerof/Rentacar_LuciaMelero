@@ -28,6 +28,17 @@ public class VentanaPrincipal extends JFrame {
     private final AlquilerDAOImpl alquilerDAO = new AlquilerDAOImpl();
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
+    // Declaración de colores
+
+    // ── COLORES ───────────────────────────────────────────
+    private static final Color COLOR_FONDO_OSCURO = new Color(30, 30, 46);
+    private static final Color COLOR_FONDO_PANEL = new Color(24, 24, 37);
+    private static final Color COLOR_FONDO_TABLA = new Color(49, 50, 68);
+    private static final Color COLOR_ACENTO_AZUL = new Color(137, 180, 250);
+    private static final Color COLOR_ACENTO_VERDE = new Color(166, 227, 161);
+    private static final Color COLOR_ACENTO_ROJO = new Color(243, 139, 168);
+    private static final Color COLOR_ACENTO_NARANJA = new Color(250, 179, 135);
+
     public VentanaPrincipal(Usuario usuario) {
         this.usuarioActual = usuario;
         initComponents();
@@ -41,7 +52,7 @@ public class VentanaPrincipal extends JFrame {
 
         // ── MENÚ ──────────────────────────────────────────
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(new Color(30, 30, 46));
+        menuBar.setBackground(COLOR_FONDO_OSCURO);
 
         JMenu menuSesion = new JMenu("Sesión");
         menuSesion.setForeground(Color.WHITE);
@@ -73,17 +84,17 @@ public class VentanaPrincipal extends JFrame {
 
         // ── LAYOUT PRINCIPAL ──────────────────────────────
         JPanel panelPrincipal = new JPanel(new BorderLayout());
-        panelPrincipal.setBackground(new Color(30, 30, 46));
+        panelPrincipal.setBackground(COLOR_FONDO_OSCURO);
 
         // ── PANEL LATERAL NAVEGACIÓN ──────────────────────
         JPanel panelNav = new JPanel();
         panelNav.setLayout(new BoxLayout(panelNav, BoxLayout.Y_AXIS));
-        panelNav.setBackground(new Color(24, 24, 37));
+        panelNav.setBackground(COLOR_FONDO_PANEL);
         panelNav.setPreferredSize(new Dimension(180, 0));
         panelNav.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
 
         JLabel lblMenu = new JLabel("MÓDULOS");
-        lblMenu.setForeground(new Color(137, 180, 250));
+        lblMenu.setForeground(COLOR_ACENTO_AZUL);
         lblMenu.setFont(new Font("Garamond", Font.BOLD, 12));
         lblMenu.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelNav.add(lblMenu);
@@ -112,7 +123,7 @@ public class VentanaPrincipal extends JFrame {
         panelNav.add(Box.createVerticalGlue());
         JLabel lblUsuario = new JLabel("<html><center>" + usuarioActual.getNombre()
                 + "<br><small>" + usuarioActual.getRol() + "</small></center></html>");
-        lblUsuario.setForeground(new Color(166, 227, 161));
+        lblUsuario.setForeground(COLOR_ACENTO_VERDE);
         lblUsuario.setFont(new Font("Garamond", Font.PLAIN, 12));
         lblUsuario.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelNav.add(lblUsuario);
@@ -127,22 +138,22 @@ public class VentanaPrincipal extends JFrame {
             }
         };
         tabla = new JTable(modeloTabla);
-        tabla.setBackground(new Color(49, 50, 68));
+        tabla.setBackground(COLOR_FONDO_TABLA);
         tabla.setForeground(Color.WHITE);
         tabla.setFont(new Font("Garamond", Font.PLAIN, 13));
         tabla.setRowHeight(26);
-        tabla.getTableHeader().setBackground(new Color(137, 180, 250));
-        tabla.getTableHeader().setForeground(new Color(30, 30, 46));
-        tabla.setSelectionBackground(new Color(137, 180, 250));
-        tabla.setSelectionForeground(new Color(30, 30, 46));
+        tabla.getTableHeader().setBackground(COLOR_ACENTO_AZUL);
+        tabla.getTableHeader().setForeground(COLOR_FONDO_OSCURO);
+        tabla.setSelectionBackground(COLOR_ACENTO_AZUL);
+        tabla.setSelectionForeground(COLOR_FONDO_OSCURO);
 
         JScrollPane scroll = new JScrollPane(tabla);
-        scroll.getViewport().setBackground(new Color(49, 50, 68));
+        scroll.getViewport().setBackground(COLOR_FONDO_TABLA);
         panelPrincipal.add(scroll, BorderLayout.CENTER);
 
         // ── PANEL FORMULARIO DERECHO ───────────────────────
         panelFormulario = new JPanel();
-        panelFormulario.setBackground(new Color(24, 24, 37));
+        panelFormulario.setBackground(COLOR_FONDO_PANEL);
         panelFormulario.setPreferredSize(new Dimension(230, 0));
         panelPrincipal.add(panelFormulario, BorderLayout.EAST);
 
@@ -202,7 +213,7 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridwidth = 2;
 
         JLabel lblTitulo = new JLabel("Gestión Vehículos", SwingConstants.CENTER);
-        lblTitulo.setForeground(new Color(137, 180, 250));
+        lblTitulo.setForeground(COLOR_ACENTO_AZUL);
         lblTitulo.setFont(new Font("Garamond", Font.BOLD, 14));
         gbc.gridy = 0;
         panelFormulario.add(lblTitulo, gbc);
@@ -230,9 +241,9 @@ public class VentanaPrincipal extends JFrame {
 
         // Botones
         gbc.gridwidth = 2;
-        JButton btnNuevo = crearBotonAccion("Nuevo", new Color(137, 180, 250));
-        JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
-        JButton btnEliminar = crearBotonAccion("Eliminar", new Color(243, 139, 168));
+        JButton btnNuevo = crearBotonAccion("Nuevo", COLOR_ACENTO_AZUL);
+        JButton btnGuardar = crearBotonAccion("Guardar", COLOR_ACENTO_VERDE);
+        JButton btnEliminar = crearBotonAccion("Eliminar", COLOR_ACENTO_ROJO);
 
         // Restricción: desactiva el botón eliminar si es cliente
         btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
@@ -300,25 +311,25 @@ public class VentanaPrincipal extends JFrame {
         // Panel conversor de divisas
         gbc.gridwidth = 2;
         JLabel lblConversor = new JLabel("── Conversor divisas ──", SwingConstants.CENTER);
-        lblConversor.setForeground(new Color(250, 179, 135));
+        lblConversor.setForeground(COLOR_ACENTO_NARANJA);
         lblConversor.setFont(new Font("Arial", Font.BOLD, 11));
         gbc.gridy = 10;
         panelFormulario.add(lblConversor, gbc);
 
         String[] divisas = { "USD", "GBP", "JPY", "CHF", "MXN" };
         JComboBox<String> cmbDivisa = new JComboBox<>(divisas);
-        cmbDivisa.setBackground(new Color(49, 50, 68));
+        cmbDivisa.setBackground(COLOR_FONDO_TABLA);
         cmbDivisa.setForeground(Color.WHITE);
         gbc.gridy = 11;
         panelFormulario.add(cmbDivisa, gbc);
 
         JLabel lblResultado = new JLabel("Selecciona un vehículo", SwingConstants.CENTER);
-        lblResultado.setForeground(new Color(166, 227, 161));
+        lblResultado.setForeground(COLOR_ACENTO_VERDE);
         lblResultado.setFont(new Font("Garamond", Font.BOLD, 12));
         gbc.gridy = 12;
         panelFormulario.add(lblResultado, gbc);
 
-        JButton btnConvertir = crearBotonAccion("Convertir precio", new Color(250, 179, 135));
+        JButton btnConvertir = crearBotonAccion("Convertir precio", COLOR_ACENTO_NARANJA);
         gbc.gridy = 13;
         panelFormulario.add(btnConvertir, gbc);
 
@@ -381,7 +392,7 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridwidth = 2;
 
         JLabel lblTitulo = new JLabel("Gestión Alquileres", SwingConstants.CENTER);
-        lblTitulo.setForeground(new Color(137, 180, 250));
+        lblTitulo.setForeground(COLOR_ACENTO_AZUL);
         lblTitulo.setFont(new Font("Garamond", Font.BOLD, 14));
         gbc.gridy = 0;
         panelFormulario.add(lblTitulo, gbc);
@@ -396,7 +407,7 @@ public class VentanaPrincipal extends JFrame {
 
         String[] estados = { "activo", "finalizado", "cancelado" };
         JComboBox<String> cmbEstado = new JComboBox<>(estados);
-        cmbEstado.setBackground(new Color(49, 50, 68));
+        cmbEstado.setBackground(COLOR_FONDO_TABLA);
         cmbEstado.setForeground(Color.WHITE);
         gbc.gridwidth = 1;
         gbc.gridx = 0;
@@ -481,9 +492,9 @@ public class VentanaPrincipal extends JFrame {
         });
 
         gbc.gridwidth = 2;
-        JButton btnNuevo = crearBotonAccion("Nuevo", new Color(137, 180, 250));
-        JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
-        JButton btnEliminar = crearBotonAccion("Eliminar", new Color(243, 139, 168));
+        JButton btnNuevo = crearBotonAccion("Nuevo", COLOR_ACENTO_AZUL);
+        JButton btnGuardar = crearBotonAccion("Guardar", COLOR_ACENTO_VERDE);
+        JButton btnEliminar = crearBotonAccion("Eliminar", COLOR_ACENTO_ROJO);
 
         // Restricción: desactiva el botón eliminar si es cliente
         btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
@@ -580,7 +591,7 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridwidth = 2;
 
         JLabel lblTitulo = new JLabel("Gestión Usuarios", SwingConstants.CENTER);
-        lblTitulo.setForeground(new Color(137, 180, 250));
+        lblTitulo.setForeground(COLOR_ACENTO_AZUL);
         lblTitulo.setFont(new Font("Garamond", Font.BOLD, 14));
         gbc.gridy = 0;
         panelFormulario.add(lblTitulo, gbc);
@@ -602,8 +613,8 @@ public class VentanaPrincipal extends JFrame {
         });
 
         gbc.gridwidth = 2;
-        JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
-        JButton btnEliminar = crearBotonAccion("Eliminar", new Color(243, 139, 168));
+        JButton btnGuardar = crearBotonAccion("Guardar", COLOR_ACENTO_VERDE);
+        JButton btnEliminar = crearBotonAccion("Eliminar", COLOR_ACENTO_ROJO);
 
         btnGuardar.setEnabled(usuarioActual.getRol().equals("empleado"));
         btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
@@ -669,9 +680,9 @@ public class VentanaPrincipal extends JFrame {
 
     // ── TEMA ───────────────────────────────────────────────
     private void aplicarTema(boolean oscuro) {
-        Color fondo = oscuro ? new Color(30, 30, 46) : new Color(240, 240, 245);
+        Color fondo = oscuro ? COLOR_FONDO_OSCURO : new Color(240, 240, 245);
         Color texto = oscuro ? Color.WHITE : Color.BLACK;
-        tabla.setBackground(oscuro ? new Color(49, 50, 68) : Color.WHITE);
+        tabla.setBackground(oscuro ? COLOR_FONDO_TABLA : Color.WHITE);
         tabla.setForeground(texto);
         getContentPane().setBackground(fondo);
         repaint();
@@ -690,7 +701,7 @@ public class VentanaPrincipal extends JFrame {
     private JButton crearBotonNav(String texto) {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Garamond", Font.PLAIN, 13));
-        btn.setBackground(new Color(49, 50, 68));
+        btn.setBackground(COLOR_FONDO_TABLA);
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
         btn.setMaximumSize(new Dimension(160, 35));
@@ -702,7 +713,7 @@ public class VentanaPrincipal extends JFrame {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Garamond", Font.BOLD, 13));
         btn.setBackground(color);
-        btn.setForeground(new Color(30, 30, 46));
+        btn.setForeground(COLOR_FONDO_OSCURO);
         btn.setFocusPainted(false);
         return btn;
     }
@@ -715,7 +726,7 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridy = fila;
         panel.add(lbl, gbc);
         JTextField txt = new JTextField(10);
-        txt.setBackground(new Color(49, 50, 68));
+        txt.setBackground(COLOR_FONDO_TABLA);
         txt.setForeground(Color.WHITE);
         txt.setCaretColor(Color.WHITE);
         gbc.gridx = 1;
