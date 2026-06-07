@@ -411,9 +411,14 @@ public class VentanaPrincipal extends JFrame {
         registrarListenerTabla(e -> {
             int fila = tabla.getSelectedRow();
             if (fila >= 0 && moduloActivo.equals("alquileres")) {
-                txtClienteId.setText("");
-                txtVehiculoId.setText("");
-                txtEmpleadoId.setText("");
+                // Recuperar el ID del alquiler para buscar los datos completos
+                int idAlquiler = (int) modeloTabla.getValueAt(fila, 0);
+                Alquiler alq = alquilerDAO.buscarPorId(idAlquiler);
+                if (alq != null) {
+                    txtClienteId.setText(String.valueOf(alq.getClienteId()));
+                    txtVehiculoId.setText(String.valueOf(alq.getVehiculoId()));
+                    txtEmpleadoId.setText(String.valueOf(alq.getEmpleadoId()));
+                }
                 txtInicio.setText(modeloTabla.getValueAt(fila, 4).toString());
                 txtFin.setText(modeloTabla.getValueAt(fila, 5).toString());
                 txtTotal.setText(modeloTabla.getValueAt(fila, 6).toString());
