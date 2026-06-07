@@ -11,7 +11,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
-import java.util.List;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -20,6 +19,9 @@ public class VentanaPrincipal extends JFrame {
     private DefaultTableModel modeloTabla;
     private JPanel panelFormulario;
     private String moduloActivo = "vehiculos";
+
+    // Variable de instancia para que no se acumulen ListSelectionListener
+    private javax.swing.event.ListSelectionListener listenerTabla = null;
 
     // DAOs
     private final VehiculoDAOImpl vehiculoDAO = new VehiculoDAOImpl();
@@ -214,7 +216,7 @@ public class VentanaPrincipal extends JFrame {
         JTextField txtPrecio = campo(gbc, panelFormulario, 6, "€/día:");
 
         // Si hay fila seleccionada, rellenar
-        tabla.getSelectionModel().addListSelectionListener(e -> {
+        registrarListenerTabla(e -> {
             int fila = tabla.getSelectedRow();
             if (fila >= 0) {
                 txtMatricula.setText(modeloTabla.getValueAt(fila, 1).toString());
@@ -406,7 +408,7 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridx = 1;
         panelFormulario.add(cmbEstado, gbc);
 
-        tabla.getSelectionModel().addListSelectionListener(e -> {
+        registrarListenerTabla(e -> {
             int fila = tabla.getSelectedRow();
             if (fila >= 0 && moduloActivo.equals("alquileres")) {
                 txtClienteId.setText("");
@@ -584,7 +586,7 @@ public class VentanaPrincipal extends JFrame {
         JTextField txtEmail = campo(gbc, panelFormulario, 3, "Email:");
         JTextField txtDni = campo(gbc, panelFormulario, 4, "DNI:");
 
-        tabla.getSelectionModel().addListSelectionListener(e -> {
+        registrarListenerTabla(e -> {
             int fila = tabla.getSelectedRow();
             if (fila >= 0 && moduloActivo.equals("usuarios")) {
                 txtNombre.setText(modeloTabla.getValueAt(fila, 2).toString());
@@ -600,7 +602,7 @@ public class VentanaPrincipal extends JFrame {
 
         btnGuardar.setEnabled(usuarioActual.getRol().equals("empleado"));
         btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
-        
+
         gbc.gridy = 5;
         panelFormulario.add(btnGuardar, gbc);
         gbc.gridy = 6;
@@ -668,6 +670,15 @@ public class VentanaPrincipal extends JFrame {
         tabla.setForeground(texto);
         getContentPane().setBackground(fondo);
         repaint();
+    }
+
+    // Método para registrar el Listener de la tabla
+    private void registrarListenerTabla(javax.swing.event.ListSelectionListener nuevo) {
+        if (listenerTabla != null) {
+            tabla.getSelectionModel().removeListSelectionListener(listenerTabla);
+        }
+        listenerTabla = nuevo;
+        tabla.getSelectionModel().addListSelectionListener(listenerTabla);
     }
 
     // ── HELPERS ────────────────────────────────────────────
