@@ -7,11 +7,11 @@ import dto.AlquilerDTO;
 import model.Usuario;
 import model.Vehiculo;
 import model.Alquiler;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
+import java.util.List;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -99,7 +99,12 @@ public class VentanaPrincipal extends JFrame {
         panelNav.add(Box.createVerticalStrut(8));
         panelNav.add(btnAlquileres);
         panelNav.add(Box.createVerticalStrut(8));
-        panelNav.add(btnUsuarios);
+
+        // El módulo Usuarios solo es visible para empleados
+        if (usuarioActual.getRol().equals("empleado")) {
+            panelNav.add(Box.createVerticalStrut(8));
+            panelNav.add(btnUsuarios);
+        }
 
         // Info usuario
         panelNav.add(Box.createVerticalGlue());
@@ -414,6 +419,60 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
+        // Mejora: Calcular precio automáticamente cuando cambian las fechas
+        Runnable calcularPrecio = () -> {
+            try {
+                double precioDia = 0;
+
+                String idTexto = txtVehiculoId.getText().trim();
+                if (!idTexto.isEmpty()) {
+                    int idVehiculo = Integer.parseInt(idTexto);
+                    for (Vehiculo v : vehiculoDAO.listarTodos()) {
+                        if (v.getId() == idVehiculo) {
+                            precioDia = v.getPrecioDia();
+                            break;
+                        }
+                    }
+                } else {
+                    int fila = tabla.getSelectedRow();
+                    if (fila >= 0) {
+                        String matriculaYModelo = modeloTabla.getValueAt(fila, 2).toString();
+                        for (Vehiculo v : vehiculoDAO.listarTodos()) {
+                            if (matriculaYModelo.contains(v.getMatricula())) {
+                                precioDia = v.getPrecioDia();
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                LocalDate inicio = LocalDate.parse(txtInicio.getText().trim());
+                LocalDate fin = LocalDate.parse(txtFin.getText().trim());
+                long dias = java.time.temporal.ChronoUnit.DAYS.between(inicio, fin);
+                if (dias > 0 && precioDia > 0) {
+                    txtTotal.setText(String.valueOf(dias * precioDia));
+                }
+            } catch (Exception ignored) {
+            }
+        };
+
+        // Los tres FocusListeners van aquí, fuera del Runnable
+        txtVehiculoId.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent e) {
+                calcularPrecio.run();
+            }
+        });
+        txtInicio.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent e) {
+                calcularPrecio.run();
+            }
+        });
+        txtFin.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent e) {
+                calcularPrecio.run();
+            }
+        });
+
         gbc.gridwidth = 2;
         JButton btnNuevo = crearBotonAccion("Nuevo", new Color(137, 180, 250));
         JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
@@ -539,6 +598,9 @@ public class VentanaPrincipal extends JFrame {
         JButton btnGuardar = crearBotonAccion("Guardar", new Color(166, 227, 161));
         JButton btnEliminar = crearBotonAccion("Eliminar", new Color(243, 139, 168));
 
+        btnGuardar.setEnabled(usuarioActual.getRol().equals("empleado"));
+        btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
+        
         gbc.gridy = 5;
         panelFormulario.add(btnGuardar, gbc);
         gbc.gridy = 6;

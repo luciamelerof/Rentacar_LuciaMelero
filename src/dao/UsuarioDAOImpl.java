@@ -4,7 +4,6 @@ import db.ConexionDB;
 import model.Cliente;
 import model.Empleado;
 import model.Usuario;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +20,6 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     String hashGuardado = rs.getString("password");
-                    System.out.println("Usuario encontrado: " + username);
-                    System.out.println("Password BD: " + hashGuardado);
-                    System.out.println("Password introducida: " + password);
-                    System.out.println("¿Coinciden? " + hashGuardado.equals(password));
 
                     if (hashGuardado.equals(password)) {
                         return mapearUsuario(rs);
