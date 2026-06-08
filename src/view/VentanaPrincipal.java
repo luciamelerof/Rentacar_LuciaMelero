@@ -576,14 +576,36 @@ public class VentanaPrincipal extends JFrame {
             cargarTablaAlquileres();
         });
 
+        // RESTRICCIÓN: Si el vehículo no está disponible, no deja crear un alquiler nuevo
         btnGuardar.addActionListener(e -> {
             try {
                 int fila = tabla.getSelectedRow();
+                if (fila < 0) {
+                    int idVehiculo = Integer.parseInt(txtVehiculoId.getText().trim());
+                    Vehiculo v = null;
+                    for (Vehiculo veh : vehiculoDAO.listarTodos()) {
+                        if (veh.getId() == idVehiculo) {
+                            v = veh;
+                            break;
+                        }
+                    }
+                    if (v == null) {
+                        JOptionPane.showMessageDialog(this, "El vehículo no existe.", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (!v.isDisponible()) {
+                        JOptionPane.showMessageDialog(this, "Ese vehículo no está disponible.", "Aviso",
+                                JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                }
                 Alquiler alq = new Alquiler(
                         fila >= 0 ? (int) modeloTabla.getValueAt(fila, 0) : 0,
                         Integer.parseInt(txtClienteId.getText().trim()),
                         Integer.parseInt(txtVehiculoId.getText().trim()),
-                        txtEmpleadoId.getText().trim().isEmpty() ? null : Integer.parseInt(txtEmpleadoId.getText().trim()),
+                        txtEmpleadoId.getText().trim().isEmpty() ? null
+                                : Integer.parseInt(txtEmpleadoId.getText().trim()),
                         LocalDate.parse(txtInicio.getText().trim()),
                         LocalDate.parse(txtFin.getText().trim()),
                         Double.parseDouble(txtTotal.getText().trim()),
