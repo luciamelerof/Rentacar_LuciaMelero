@@ -120,18 +120,62 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
         }
     }
 
-    // Eliminar alquiler
+    // Eliminar alquiler: si se elimina el alquiler, se libera el vehículo
     @Override
     public void eliminar(int id) {
-        String sql = "DELETE FROM alquileres WHERE id=?";
-        try (Connection con = ConexionDB.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)) {
+        Connection con = null;
+        try {
+            con = ConexionDB.getConnection();
+            con.setAutoCommit(false);
 
-            ps.setInt(1, id);
-            ps.executeUpdate();
+            // Primero recuperar el vehiculo_id antes de borrar
+            int vehiculoId = -1;
+            String sqlBuscar = "SELECT vehiculo_id FROM alquileres WHERE id = ?";
+            try (PreparedStatement ps = con.prepareStatement(sqlBuscar)) {
+                ps.setInt(1, id);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        vehiculoId = rs.getInt("vehiculo_id");
+                    }
+                }
+            }
+
+            // Borrar el alquiler
+            String sqlDelete = "DELETE FROM alquileres WHERE id = ?";
+            try (PreparedStatement ps = con.prepareStatement(sqlDelete)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+
+            // Liberar el vehículo
+            if (vehiculoId != -1) {
+                String sqlVehiculo = "UPDATE vehiculos SET disponible = TRUE WHERE id = ?";
+                try (PreparedStatement ps = con.prepareStatement(sqlVehiculo)) {
+                    ps.setInt(1, vehiculoId);
+                    ps.executeUpdate();
+                }
+            }
+
+            con.commit();
 
         } catch (SQLException e) {
             System.err.println("Error al eliminar alquiler: " + e.getMessage());
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }
 
