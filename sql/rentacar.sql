@@ -50,7 +50,7 @@ CREATE TABLE alquileres (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cliente_id INT NOT NULL,
     vehiculo_id INT NOT NULL,
-    empleado_id INT NOT NULL,
+    empleado_id INT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
     precio_total DECIMAL(10, 2) NOT NULL,
@@ -69,7 +69,7 @@ INSERT INTO
 VALUES (
         1,
         'admin',
-        '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+        '1234',
         'admin@rentacar.com',
         'Carlos',
         'López Ruiz',
@@ -79,7 +79,7 @@ VALUES (
     (
         2,
         'maria',
-        '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+        '1234',
         'maria@email.com',
         'María',
         'García Pérez',
@@ -89,7 +89,7 @@ VALUES (
     (
         3,
         'juan',
-        '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+        '1234',
         'juan@email.com',
         'Juan',
         'Martínez Díaz',
@@ -99,7 +99,7 @@ VALUES (
     (
         4,
         'laura',
-        '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+        '1234',
         'laura@rentacar.com',
         'Laura',
         'Sánchez Mora',

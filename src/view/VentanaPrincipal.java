@@ -235,6 +235,12 @@ public class VentanaPrincipal extends JFrame {
     // Mostrar Form de Vehículos
     private void mostrarFormVehiculo(Vehiculo v) {
 
+        // Si es cliente, solo mostrar el conversor de divisas
+        if (usuarioActual.getRol().equals("cliente")) {
+            mostrarConversorSolo();
+            return;
+        }
+
         // Elimina los componentes que estuvieran antes
         panelFormulario.removeAll();
         panelFormulario.setLayout(new GridBagLayout());
@@ -566,7 +572,11 @@ public class VentanaPrincipal extends JFrame {
         panelFormulario.add(btnEliminar, gbc);
 
         btnNuevo.addActionListener(e -> {
-            txtClienteId.setText("");
+            if (usuarioActual.getRol().equals("cliente")) {
+                txtClienteId.setText(String.valueOf(usuarioActual.getId()));
+            } else {
+                txtClienteId.setText("");
+            }
             txtVehiculoId.setText("");
             txtEmpleadoId.setText("");
             txtInicio.setText(LocalDate.now().toString());
@@ -576,7 +586,8 @@ public class VentanaPrincipal extends JFrame {
             cargarTablaAlquileres();
         });
 
-        // RESTRICCIÓN: Si el vehículo no está disponible, no deja crear un alquiler nuevo
+        // RESTRICCIÓN: Si el vehículo no está disponible, no deja crear un alquiler
+        // nuevo
         btnGuardar.addActionListener(e -> {
             try {
                 int fila = tabla.getSelectedRow();
@@ -778,6 +789,67 @@ public class VentanaPrincipal extends JFrame {
         }
         listenerTabla = nuevo;
         tabla.getSelectionModel().addListSelectionListener(listenerTabla);
+    }
+
+    // Restricción para clientes: solo mostrar conversor en vehículos
+
+    // Panel solo con conversor de divisas para clientes en módulo Vehículos
+    private void mostrarConversorSolo() {
+        panelFormulario.removeAll();
+        panelFormulario.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 8, 5, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 2;
+
+        JLabel lblTitulo = new JLabel("Conversor de divisas", SwingConstants.CENTER);
+        lblTitulo.setForeground(COLOR_ACENTO_AZUL);
+        lblTitulo.setFont(new Font("Garamond", Font.BOLD, 14));
+        gbc.gridy = 0;
+        panelFormulario.add(lblTitulo, gbc);
+
+        String[] divisas = { "USD", "GBP", "JPY", "CHF", "MXN" };
+        JComboBox<String> cmbDivisa = new JComboBox<>(divisas);
+        cmbDivisa.setBackground(COLOR_FONDO_TABLA);
+        cmbDivisa.setForeground(Color.WHITE);
+        gbc.gridy = 1;
+        panelFormulario.add(cmbDivisa, gbc);
+
+        JLabel lblResultado = new JLabel("Selecciona un vehículo", SwingConstants.CENTER);
+        lblResultado.setForeground(COLOR_ACENTO_VERDE);
+        lblResultado.setFont(new Font("Garamond", Font.BOLD, 12));
+        gbc.gridy = 2;
+        panelFormulario.add(lblResultado, gbc);
+
+        JButton btnConvertir = crearBotonAccion("Convertir precio", COLOR_ACENTO_NARANJA);
+        gbc.gridy = 3;
+        panelFormulario.add(btnConvertir, gbc);
+
+        btnConvertir.addActionListener(e -> {
+            int fila = tabla.getSelectedRow();
+            if (fila < 0) {
+                JOptionPane.showMessageDialog(this, "Selecciona un vehículo primero.");
+                return;
+            }
+            double precioDia = Double.parseDouble(
+                    modeloTabla.getValueAt(fila, 6).toString());
+            String divisa = (String) cmbDivisa.getSelectedItem();
+            lblResultado.setText("Calculando...");
+
+            new Thread(() -> {
+                double resultado = api.ExchangeRateService.convertir(precioDia, divisa);
+                SwingUtilities.invokeLater(() -> {
+                    if (resultado > 0) {
+                        lblResultado.setText(precioDia + " € = " + resultado + " " + divisa);
+                    } else {
+                        lblResultado.setText("Error al obtener tasa");
+                    }
+                });
+            }).start();
+        });
+
+        panelFormulario.revalidate();
+        panelFormulario.repaint();
     }
 
     // HELPERS
