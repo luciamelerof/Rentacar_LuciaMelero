@@ -164,9 +164,9 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
             while (rs.next()) {
                 lista.add(new AlquilerDTO(
                         rs.getInt("id"),
-                        rs.getString("cliente"),
+                        rs.getString("nombre_cliente"),
                         rs.getString("vehiculo"),
-                        rs.getString("empleado"),
+                        rs.getString("nombre_empleado"),
                         rs.getDate("fecha_inicio").toLocalDate(),
                         rs.getDate("fecha_fin").toLocalDate(),
                         rs.getDouble("precio_total"),
