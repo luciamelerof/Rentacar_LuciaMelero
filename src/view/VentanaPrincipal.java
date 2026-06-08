@@ -232,68 +232,6 @@ public class VentanaPrincipal extends JFrame {
         }
     }
 
-
-    // RESTRICCIÓN CLIENTE: al no poder modificar los vehículos, que
-    // solo les aparezca el conversor de divisas.
-    
-    private void mostrarConversorSolo() {
-        panelFormulario.removeAll();
-        panelFormulario.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 8, 5, 8);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 2;
-
-        JLabel lblTitulo = new JLabel("Conversor de divisas", SwingConstants.CENTER);
-        lblTitulo.setForeground(COLOR_ACENTO_AZUL);
-        lblTitulo.setFont(new Font("Garamond", Font.BOLD, 14));
-        gbc.gridy = 0;
-        panelFormulario.add(lblTitulo, gbc);
-
-        String[] divisas = { "USD", "GBP", "JPY", "CHF", "MXN" };
-        JComboBox<String> cmbDivisa = new JComboBox<>(divisas);
-        cmbDivisa.setBackground(COLOR_FONDO_TABLA);
-        cmbDivisa.setForeground(Color.WHITE);
-        gbc.gridy = 1;
-        panelFormulario.add(cmbDivisa, gbc);
-
-        JLabel lblResultado = new JLabel("Selecciona un vehículo", SwingConstants.CENTER);
-        lblResultado.setForeground(COLOR_ACENTO_VERDE);
-        lblResultado.setFont(new Font("Garamond", Font.BOLD, 12));
-        gbc.gridy = 2;
-        panelFormulario.add(lblResultado, gbc);
-
-        JButton btnConvertir = crearBotonAccion("Convertir precio", COLOR_ACENTO_NARANJA);
-        gbc.gridy = 3;
-        panelFormulario.add(btnConvertir, gbc);
-
-        btnConvertir.addActionListener(e -> {
-            int fila = tabla.getSelectedRow();
-            if (fila < 0) {
-                JOptionPane.showMessageDialog(this, "Selecciona un vehículo primero.");
-                return;
-            }
-            double precioDia = Double.parseDouble(
-                    modeloTabla.getValueAt(fila, 6).toString());
-            String divisa = (String) cmbDivisa.getSelectedItem();
-            lblResultado.setText("Calculando...");
-
-            new Thread(() -> {
-                double resultado = api.ExchangeRateService.convertir(precioDia, divisa);
-                SwingUtilities.invokeLater(() -> {
-                    if (resultado > 0) {
-                        lblResultado.setText(precioDia + " € = " + resultado + " " + divisa);
-                    } else {
-                        lblResultado.setText("Error al obtener tasa");
-                    }
-                });
-            }).start();
-        });
-
-        panelFormulario.revalidate();
-        panelFormulario.repaint();
-    }
-
     // Mostrar Form de Vehículos
     private void mostrarFormVehiculo(Vehiculo v) {
 
@@ -306,11 +244,6 @@ public class VentanaPrincipal extends JFrame {
         gbc.insets = new Insets(5, 8, 5, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
-
-        if (usuarioActual.getRol().equals("cliente")) {
-            mostrarConversorSolo();
-            return;
-        }
 
         JLabel lblTitulo = new JLabel("Gestión Vehículos", SwingConstants.CENTER);
         lblTitulo.setForeground(COLOR_ACENTO_AZUL);
@@ -650,8 +583,7 @@ public class VentanaPrincipal extends JFrame {
                         fila >= 0 ? (int) modeloTabla.getValueAt(fila, 0) : 0,
                         Integer.parseInt(txtClienteId.getText().trim()),
                         Integer.parseInt(txtVehiculoId.getText().trim()),
-                        txtEmpleadoId.getText().trim().isEmpty() ? null
-                                : Integer.parseInt(txtEmpleadoId.getText().trim()),
+                        txtEmpleadoId.getText().trim().isEmpty() ? null : Integer.parseInt(txtEmpleadoId.getText().trim()),
                         LocalDate.parse(txtInicio.getText().trim()),
                         LocalDate.parse(txtFin.getText().trim()),
                         Double.parseDouble(txtTotal.getText().trim()),
