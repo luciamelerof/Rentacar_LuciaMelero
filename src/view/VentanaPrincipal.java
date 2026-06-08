@@ -61,7 +61,7 @@ public class VentanaPrincipal extends JFrame {
         setLocationRelativeTo(null);
 
         // * MENÚ
-        
+
         // JMenuBar -> barra entera del menú
         // JMenu -> cada desplegable (sesión, tema)
         // JMenuItem -> cada opción dentro del desplegable
@@ -101,12 +101,12 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(COLOR_FONDO_OSCURO);
 
-        // PANEL LATERAL NAVEGACIÓN 
+        // PANEL LATERAL NAVEGACIÓN
         JPanel panelNav = new JPanel();
         // Y_AXIS: apila los componentes verticalmente uno debajo de otro
         panelNav.setLayout(new BoxLayout(panelNav, BoxLayout.Y_AXIS));
         panelNav.setBackground(COLOR_FONDO_PANEL);
-        // Ancho 180px, alto 0px porque en BorderLayout ya se configuró 
+        // Ancho 180px, alto 0px porque en BorderLayout ya se configuró
         // que el lado izquierdo ocupase todo el espacio disponible automáticamente.
         panelNav.setPreferredSize(new Dimension(180, 0));
         // Padding interior: 20px arriba y abajo, 10px izq y derecha.
@@ -285,7 +285,7 @@ public class VentanaPrincipal extends JFrame {
         // Restricciones: desactiva el botón eliminar si es cliente y guardar vehículo
         btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
         btnGuardar.setEnabled(usuarioActual.getRol().equals("empleado"));
-        
+
         gbc.gridy = 7;
         panelFormulario.add(btnNuevo, gbc);
         gbc.gridy = 8;
@@ -451,6 +451,15 @@ public class VentanaPrincipal extends JFrame {
         JTextField txtClienteId = campo(gbc, panelFormulario, 1, "ID Cliente:");
         JTextField txtVehiculoId = campo(gbc, panelFormulario, 2, "ID Vehículo:");
         JTextField txtEmpleadoId = campo(gbc, panelFormulario, 3, "ID Empleado:");
+
+        // Si es cliente, ocultar ID Cliente e ID Empleado y rellenarlos automáticamente
+        if (usuarioActual.getRol().equals("cliente")) {
+            txtClienteId.setText(String.valueOf(usuarioActual.getId()));
+            txtClienteId.setEnabled(false);
+            txtEmpleadoId.setText("");
+            txtEmpleadoId.setEnabled(false);
+        }
+
         JTextField txtInicio = campo(gbc, panelFormulario, 4, "Inicio(yyyy-mm-dd):");
         JTextField txtFin = campo(gbc, panelFormulario, 5, "Fin(yyyy-mm-dd):");
         JTextField txtTotal = campo(gbc, panelFormulario, 6, "Total €:");
@@ -574,7 +583,7 @@ public class VentanaPrincipal extends JFrame {
                         fila >= 0 ? (int) modeloTabla.getValueAt(fila, 0) : 0,
                         Integer.parseInt(txtClienteId.getText().trim()),
                         Integer.parseInt(txtVehiculoId.getText().trim()),
-                        Integer.parseInt(txtEmpleadoId.getText().trim()),
+                        txtEmpleadoId.getText().trim().isEmpty() ? null : Integer.parseInt(txtEmpleadoId.getText().trim()),
                         LocalDate.parse(txtInicio.getText().trim()),
                         LocalDate.parse(txtFin.getText().trim()),
                         Double.parseDouble(txtTotal.getText().trim()),
@@ -713,7 +722,7 @@ public class VentanaPrincipal extends JFrame {
         panelFormulario.repaint();
     }
 
-    // MENÚ PEQUEÑO 
+    // MENÚ PEQUEÑO
 
     // CAMBIAR PASSWORD
     private void cambiarPassword() {
