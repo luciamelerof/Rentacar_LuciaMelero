@@ -144,19 +144,17 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
     public List<AlquilerDTO> listarTodos() {
         List<AlquilerDTO> lista = new ArrayList<>();
         String sql = """
-                SELECT a.id,
-                       CONCAT(u1.nombre, ' ', u1.apellidos) AS cliente,
-                       CONCAT(v.marca, ' ', v.modelo, ' (', v.matricula, ')') AS vehiculo,
-                       CONCAT(u2.nombre, ' ', u2.apellidos) AS empleado,
-                       a.fecha_inicio, a.fecha_fin,
-                       a.precio_total, a.estado
-                FROM alquileres a
-                JOIN clientes   c  ON a.cliente_id  = c.usuario_id
-                JOIN usuarios   u1 ON c.usuario_id  = u1.id
-                JOIN vehiculos  v  ON a.vehiculo_id  = v.id
-                JOIN empleados  e  ON a.empleado_id  = e.usuario_id
-                JOIN usuarios   u2 ON e.usuario_id   = u2.id
-                ORDER BY a.fecha_inicio DESC
+                    SELECT a.id,
+                           CONCAT(uc.nombre, ' ', uc.apellidos) AS nombre_cliente,
+                           CONCAT(v.marca, ' ', v.modelo, ' (', v.matricula, ')') AS vehiculo,
+                           COALESCE(CONCAT(ue.nombre, ' ', ue.apellidos), 'Sin empleado') AS nombre_empleado,
+                           a.fecha_inicio, a.fecha_fin, a.precio_total, a.estado
+                    FROM alquileres a
+                    JOIN clientes c    ON a.cliente_id  = c.usuario_id
+                    JOIN usuarios uc   ON c.usuario_id  = uc.id
+                    JOIN vehiculos v   ON a.vehiculo_id = v.id
+                    LEFT JOIN empleados e  ON a.empleado_id = e.usuario_id
+                    LEFT JOIN usuarios ue  ON e.usuario_id  = ue.id
                 """;
 
         try (Connection con = ConexionDB.getConnection();
