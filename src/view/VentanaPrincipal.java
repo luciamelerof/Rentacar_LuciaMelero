@@ -234,9 +234,11 @@ public class VentanaPrincipal extends JFrame {
 
     // Mostrar Form de Vehículos
     private void mostrarFormVehiculo(Vehiculo v) {
+
         // Elimina los componentes que estuvieran antes
         panelFormulario.removeAll();
         panelFormulario.setLayout(new GridBagLayout());
+
         // Grids para controlar cómo se colocan los campos
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 8, 5, 8);
@@ -280,9 +282,10 @@ public class VentanaPrincipal extends JFrame {
         JButton btnGuardar = crearBotonAccion("Guardar", COLOR_ACENTO_VERDE);
         JButton btnEliminar = crearBotonAccion("Eliminar", COLOR_ACENTO_ROJO);
 
-        // Restricción: desactiva el botón eliminar si es cliente
+        // Restricciones: desactiva el botón eliminar si es cliente y guardar vehículo
         btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
-
+        btnGuardar.setEnabled(usuarioActual.getRol().equals("empleado"));
+        
         gbc.gridy = 7;
         panelFormulario.add(btnNuevo, gbc);
         gbc.gridy = 8;
