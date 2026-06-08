@@ -6,7 +6,7 @@ public class Alquiler {
     private int id;
     private int clienteId;
     private int vehiculoId;
-    private int empleadoId;
+    private Integer empleadoId;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private double precioTotal;
@@ -15,7 +15,7 @@ public class Alquiler {
     public Alquiler() {
     }
 
-    public Alquiler(int id, int clienteId, int vehiculoId, int empleadoId,
+    public Alquiler(int id, int clienteId, int vehiculoId, Integer empleadoId,
             LocalDate fechaInicio, LocalDate fechaFin,
             double precioTotal, String estado) {
         this.id = id;
@@ -52,7 +52,7 @@ public class Alquiler {
         this.vehiculoId = vehiculoId;
     }
 
-    public int getEmpleadoId() {
+    public Integer getEmpleadoId() {
         return empleadoId;
     }
 

@@ -23,7 +23,11 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
             try (PreparedStatement ps = con.prepareStatement(sql)) {
                 ps.setInt(1, alquiler.getClienteId());
                 ps.setInt(2, alquiler.getVehiculoId());
-                ps.setInt(3, alquiler.getEmpleadoId());
+                if (alquiler.getEmpleadoId() != null) {
+                    ps.setInt(3, alquiler.getEmpleadoId());
+                } else {
+                    ps.setNull(3, java.sql.Types.INTEGER);
+                }
                 ps.setDate(4, Date.valueOf(alquiler.getFechaInicio()));
                 ps.setDate(5, Date.valueOf(alquiler.getFechaFin()));
                 ps.setDouble(6, alquiler.getPrecioTotal());
@@ -116,7 +120,7 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
         }
     }
 
-    // Eliminar alquiler 
+    // Eliminar alquiler
     @Override
     public void eliminar(int id) {
         String sql = "DELETE FROM alquileres WHERE id=?";
@@ -133,7 +137,7 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
 
     // Este listarTodos(), en lugar de devolver IDs numéricos, devuelve
     // los nombres reales de cliente, vehículo y empleado usando JOINs.
-    
+
     // Se usa AlquilerDTO porque en la interfaz solo se quiere mostrar
     // nombres legibles, no los IDs del vehículo, cliente...
     @Override
@@ -177,7 +181,7 @@ public class AlquilerDAOImpl implements IAlquilerDAO {
     }
 
     // Buscar un alquiler por ID, se usa en el listener de mostrarFormAlquiler
-    // en VentanaPrincipal para que devuelva en los paneles los datos del alquiler 
+    // en VentanaPrincipal para que devuelva en los paneles los datos del alquiler
     // seleccionado.
     @Override
     public Alquiler buscarPorId(int id) {
