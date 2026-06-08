@@ -14,6 +14,14 @@ import java.time.LocalDate;
 
 public class VentanaPrincipal extends JFrame {
 
+    // * Variables de instancia:
+    // usuarioActual: usuario que inició sesión
+    // tabla: componente visual de la tabla
+    // modeloTabla: datos dentro de la tabla
+    // panelFormulario: panel derecho donde aparece el formulario
+    // moduloActivo: String que guarda el módulo en el que se encuentra,
+    // por defecto: vehículos.
+
     private Usuario usuarioActual;
     private JTable tabla;
     private DefaultTableModel modeloTabla;
@@ -30,7 +38,6 @@ public class VentanaPrincipal extends JFrame {
 
     // Declaración de colores
 
-    // ── COLORES ───────────────────────────────────────────
     private static final Color COLOR_FONDO_OSCURO = new Color(30, 30, 46);
     private static final Color COLOR_FONDO_PANEL = new Color(24, 24, 37);
     private static final Color COLOR_FONDO_TABLA = new Color(49, 50, 68);
@@ -39,18 +46,25 @@ public class VentanaPrincipal extends JFrame {
     private static final Color COLOR_ACENTO_ROJO = new Color(243, 139, 168);
     private static final Color COLOR_ACENTO_NARANJA = new Color(250, 179, 135);
 
+    // Recibe objeto Usuario del Login y lo guarda, luego llama a
+    // initComponents() que es donde se construye la interfaz.
     public VentanaPrincipal(Usuario usuario) {
         this.usuarioActual = usuario;
         initComponents();
     }
 
+    // Construcción de la interfaz
     private void initComponents() {
         setTitle("RentaCar - Panel Principal");
         setSize(1000, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // ── MENÚ ──────────────────────────────────────────
+        // * MENÚ
+        
+        // JMenuBar -> barra entera del menú
+        // JMenu -> cada desplegable (sesión, tema)
+        // JMenuItem -> cada opción dentro del desplegable
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(COLOR_FONDO_OSCURO);
 
@@ -60,6 +74,7 @@ public class VentanaPrincipal extends JFrame {
         JMenuItem itemCambiarPass = new JMenuItem("Cambiar contraseña");
         JMenuItem itemCerrar = new JMenuItem("Cerrar sesión");
 
+        // Cambiar contraseña dentro de Sesión
         itemCambiarPass.addActionListener(e -> cambiarPassword());
         itemCerrar.addActionListener(e -> {
             new Login().setVisible(true);
@@ -82,15 +97,19 @@ public class VentanaPrincipal extends JFrame {
 
         setJMenuBar(menuBar);
 
-        // ── LAYOUT PRINCIPAL ──────────────────────────────
+        // LAYOUT PRINCIPAL
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(COLOR_FONDO_OSCURO);
 
-        // ── PANEL LATERAL NAVEGACIÓN ──────────────────────
+        // PANEL LATERAL NAVEGACIÓN 
         JPanel panelNav = new JPanel();
+        // Y_AXIS: apila los componentes verticalmente uno debajo de otro
         panelNav.setLayout(new BoxLayout(panelNav, BoxLayout.Y_AXIS));
         panelNav.setBackground(COLOR_FONDO_PANEL);
+        // Ancho 180px, alto 0px porque en BorderLayout ya se configuró 
+        // que el lado izquierdo ocupase todo el espacio disponible automáticamente.
         panelNav.setPreferredSize(new Dimension(180, 0));
+        // Padding interior: 20px arriba y abajo, 10px izq y derecha.
         panelNav.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
 
         JLabel lblMenu = new JLabel("MÓDULOS");
@@ -109,6 +128,7 @@ public class VentanaPrincipal extends JFrame {
         btnUsuarios.addActionListener(e -> cambiarModulo("usuarios"));
 
         panelNav.add(btnVehiculos);
+        // createVerticalStrut -> espacio vacío de 8px entre botones.
         panelNav.add(Box.createVerticalStrut(8));
         panelNav.add(btnAlquileres);
         panelNav.add(Box.createVerticalStrut(8));
@@ -120,6 +140,9 @@ public class VentanaPrincipal extends JFrame {
         }
 
         // Info usuario
+
+        // Box.createVerticalGlue: espacio elástico que empuja todo lo que viene
+        // después hacia abajo.
         panelNav.add(Box.createVerticalGlue());
         JLabel lblUsuario = new JLabel("<html><center>" + usuarioActual.getNombre()
                 + "<br><small>" + usuarioActual.getRol() + "</small></center></html>");
@@ -130,13 +153,16 @@ public class VentanaPrincipal extends JFrame {
 
         panelPrincipal.add(panelNav, BorderLayout.WEST);
 
-        // ── PANEL CENTRAL (tabla) ──────────────────────────
+        // PANEL CENTRAL (tabla)
+
+        // Se devuelve false para que las celdas no sean editables directamente
         modeloTabla = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         };
+
         tabla = new JTable(modeloTabla);
         tabla.setBackground(COLOR_FONDO_TABLA);
         tabla.setForeground(Color.WHITE);
@@ -144,14 +170,16 @@ public class VentanaPrincipal extends JFrame {
         tabla.setRowHeight(26);
         tabla.getTableHeader().setBackground(COLOR_ACENTO_AZUL);
         tabla.getTableHeader().setForeground(COLOR_FONDO_OSCURO);
+        // Colores cuando la fila estña seleccionada
         tabla.setSelectionBackground(COLOR_ACENTO_AZUL);
         tabla.setSelectionForeground(COLOR_FONDO_OSCURO);
 
+        // Si hay muchas filas, permite hacer scroll
         JScrollPane scroll = new JScrollPane(tabla);
         scroll.getViewport().setBackground(COLOR_FONDO_TABLA);
         panelPrincipal.add(scroll, BorderLayout.CENTER);
 
-        // ── PANEL FORMULARIO DERECHO ───────────────────────
+        // PANEL FORMULARIO DERECHO
         panelFormulario = new JPanel();
         panelFormulario.setBackground(COLOR_FONDO_PANEL);
         panelFormulario.setPreferredSize(new Dimension(230, 0));
@@ -163,7 +191,7 @@ public class VentanaPrincipal extends JFrame {
         cambiarModulo("vehiculos");
     }
 
-    // ── CAMBIAR MÓDULO ─────────────────────────────────────
+    // CAMBIAR MÓDULO
     private void cambiarModulo(String modulo) {
         this.moduloActivo = modulo;
         switch (modulo) {
@@ -182,7 +210,7 @@ public class VentanaPrincipal extends JFrame {
         }
     }
 
-    // ── VEHÍCULOS ──────────────────────────────────────────
+    // VEHÍCULOS
     private void cargarTablaVehiculos() {
         modeloTabla.setRowCount(0);
         modeloTabla.setColumnCount(0);
@@ -204,9 +232,12 @@ public class VentanaPrincipal extends JFrame {
         }
     }
 
+    // Mostrar Form de Vehículos
     private void mostrarFormVehiculo(Vehiculo v) {
+        // Elimina los componentes que estuvieran antes
         panelFormulario.removeAll();
         panelFormulario.setLayout(new GridBagLayout());
+        // Grids para controlar cómo se colocan los campos
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 8, 5, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -219,6 +250,10 @@ public class VentanaPrincipal extends JFrame {
         panelFormulario.add(lblTitulo, gbc);
 
         gbc.gridwidth = 1;
+
+        // Llamada a campo: añade una etiqueta y un campo de texto al panel,
+        // y devuelve un JTextField para poder leerlo después.
+        // el número es la fila en el GridBag.
         JTextField txtMatricula = campo(gbc, panelFormulario, 1, "Matrícula:");
         JTextField txtMarca = campo(gbc, panelFormulario, 2, "Marca:");
         JTextField txtModelo = campo(gbc, panelFormulario, 3, "Modelo:");
@@ -226,7 +261,7 @@ public class VentanaPrincipal extends JFrame {
         JTextField txtCategoria = campo(gbc, panelFormulario, 5, "Categoría:");
         JTextField txtPrecio = campo(gbc, panelFormulario, 6, "€/día:");
 
-        // Si hay fila seleccionada, rellenar
+        // Si hay fila seleccionada, rellenar con los datos
         registrarListenerTabla(e -> {
             int fila = tabla.getSelectedRow();
             if (fila >= 0) {
@@ -239,7 +274,7 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
-        // Botones
+        // IMPORTANTE: Botones
         gbc.gridwidth = 2;
         JButton btnNuevo = crearBotonAccion("Nuevo", COLOR_ACENTO_AZUL);
         JButton btnGuardar = crearBotonAccion("Guardar", COLOR_ACENTO_VERDE);
@@ -266,6 +301,10 @@ public class VentanaPrincipal extends JFrame {
             cargarTablaVehiculos();
         });
 
+        // GUARDAR: crea objeto Vehículo, comprueba si hay fila seleccionada,
+        // si la hay -> se llama a actualizar,
+        // sino, se llama a insertar y MySQL genera el ID del vehículo solo.
+
         btnGuardar.addActionListener(e -> {
             try {
                 Vehiculo nv = new Vehiculo(0,
@@ -286,12 +325,15 @@ public class VentanaPrincipal extends JFrame {
                     vehiculoDAO.insertar(nv);
                     JOptionPane.showMessageDialog(this, "Vehículo añadido.");
                 }
+
+                // Refresca la tabla para que el tiempo se vea inmediatamente.
                 cargarTablaVehiculos();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
+        // ELIMINAR
         btnEliminar.addActionListener(e -> {
             int fila = tabla.getSelectedRow();
             if (fila < 0) {
@@ -310,12 +352,14 @@ public class VentanaPrincipal extends JFrame {
 
         // Panel conversor de divisas
         gbc.gridwidth = 2;
+        // Celda con la conversión
         JLabel lblConversor = new JLabel("── Conversor divisas ──", SwingConstants.CENTER);
         lblConversor.setForeground(COLOR_ACENTO_NARANJA);
         lblConversor.setFont(new Font("Arial", Font.BOLD, 11));
         gbc.gridy = 10;
         panelFormulario.add(lblConversor, gbc);
 
+        // Unidades a cambiar disponibles
         String[] divisas = { "USD", "GBP", "JPY", "CHF", "MXN" };
         JComboBox<String> cmbDivisa = new JComboBox<>(divisas);
         cmbDivisa.setBackground(COLOR_FONDO_TABLA);
@@ -329,6 +373,7 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridy = 12;
         panelFormulario.add(lblResultado, gbc);
 
+        // Botón para convertir
         JButton btnConvertir = crearBotonAccion("Convertir precio", COLOR_ACENTO_NARANJA);
         gbc.gridy = 13;
         panelFormulario.add(btnConvertir, gbc);
@@ -339,6 +384,7 @@ public class VentanaPrincipal extends JFrame {
                 JOptionPane.showMessageDialog(this, "Selecciona un vehículo primero.");
                 return;
             }
+
             double precioDia = Double.parseDouble(
                     modeloTabla.getValueAt(fila, 6).toString());
             String divisa = (String) cmbDivisa.getSelectedItem();
@@ -347,6 +393,7 @@ public class VentanaPrincipal extends JFrame {
             // Llamada en hilo separado para no bloquear la UI
             new Thread(() -> {
                 double resultado = api.ExchangeRateService.convertir(precioDia, divisa);
+                // Actualiza el label con el resultado
                 SwingUtilities.invokeLater(() -> {
                     if (resultado > 0) {
                         lblResultado.setText(precioDia + " € = " + resultado + " " + divisa);
@@ -361,7 +408,7 @@ public class VentanaPrincipal extends JFrame {
         panelFormulario.repaint();
     }
 
-    // ── ALQUILERES ─────────────────────────────────────────
+    // ALQUILERES
     private void cargarTablaAlquileres() {
         modeloTabla.setRowCount(0);
         modeloTabla.setColumnCount(0);
@@ -562,7 +609,7 @@ public class VentanaPrincipal extends JFrame {
         panelFormulario.repaint();
     }
 
-    // ── USUARIOS ───────────────────────────────────────────
+    // USUARIOS
     private void cargarTablaUsuarios() {
         modeloTabla.setRowCount(0);
         modeloTabla.setColumnCount(0);
@@ -663,7 +710,9 @@ public class VentanaPrincipal extends JFrame {
         panelFormulario.repaint();
     }
 
-    // ── CAMBIAR PASSWORD ───────────────────────────────────
+    // MENÚ PEQUEÑO 
+
+    // CAMBIAR PASSWORD
     private void cambiarPassword() {
         JPasswordField txtNueva = new JPasswordField();
         int ok = JOptionPane.showConfirmDialog(this,
@@ -678,7 +727,7 @@ public class VentanaPrincipal extends JFrame {
         }
     }
 
-    // ── TEMA ───────────────────────────────────────────────
+    // TEMA
     private void aplicarTema(boolean oscuro) {
         Color fondo = oscuro ? COLOR_FONDO_OSCURO : new Color(240, 240, 245);
         Color texto = oscuro ? Color.WHITE : Color.BLACK;
@@ -697,7 +746,7 @@ public class VentanaPrincipal extends JFrame {
         tabla.getSelectionModel().addListSelectionListener(listenerTabla);
     }
 
-    // ── HELPERS ────────────────────────────────────────────
+    // HELPERS
     private JButton crearBotonNav(String texto) {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Garamond", Font.PLAIN, 13));

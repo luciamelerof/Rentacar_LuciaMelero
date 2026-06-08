@@ -131,7 +131,7 @@ public class Login extends JFrame {
         // Acción botón Entrar, cuando se hace clic, llama al método login()
         btnEntrar.addActionListener(e -> login());
 
-        // Entrar también con Enter desde el campo contraseña
+        // DETALLE: Entrar también con Enter desde el campo contraseña
         txtPassword.addActionListener(e -> login());
 
         // Acción botón Registro
@@ -141,6 +141,10 @@ public class Login extends JFrame {
         });
     }
 
+    // Método login(): pedir username/password al usuario,
+    // si están vacíos-> JOptionPane y vuelta al inicio
+    // método validar()-> si son incorrectos, mensaje de error
+    // si el usuario ya existe en la BD->Bienvenido y su nombre
     private void login() {
         String username = txtUsername.getText().trim();
         String password = new String(txtPassword.getPassword());
@@ -169,6 +173,7 @@ public class Login extends JFrame {
         }
     }
 
+    // Mostrar por pantalla el Login
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Login().setVisible(true));
     }
