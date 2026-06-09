@@ -493,7 +493,7 @@ public class VentanaPrincipal extends JFrame {
                 if (alq != null) {
                     txtClienteId.setText(String.valueOf(alq.getClienteId()));
                     txtVehiculoId.setText(String.valueOf(alq.getVehiculoId()));
-                    txtEmpleadoId.setText(String.valueOf(alq.getEmpleadoId()));
+                    txtEmpleadoId.setText(alq.getEmpleadoId() != null ? String.valueOf(alq.getEmpleadoId()) : "");
                 }
                 txtInicio.setText(modeloTabla.getValueAt(fila, 4).toString());
                 txtFin.setText(modeloTabla.getValueAt(fila, 5).toString());
