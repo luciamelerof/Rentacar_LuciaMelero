@@ -39,7 +39,6 @@ public class VentanaPrincipal extends JFrame {
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
     // Declaración de colores
-
     private static final Color COLOR_FONDO_OSCURO = new Color(30, 30, 46);
     private static final Color COLOR_FONDO_PANEL = new Color(24, 24, 37);
     private static final Color COLOR_FONDO_TABLA = new Color(49, 50, 68);
@@ -121,6 +120,7 @@ public class VentanaPrincipal extends JFrame {
         panelNav.add(lblMenu);
         panelNav.add(Box.createVerticalStrut(15));
 
+        // ** Botones Izquierda
         JButton btnVehiculos = crearBotonNav("Vehículos");
         JButton btnAlquileres = crearBotonNav("Alquileres");
         JButton btnUsuarios = crearBotonNav("Usuarios");
@@ -129,6 +129,7 @@ public class VentanaPrincipal extends JFrame {
         btnAlquileres.addActionListener(e -> cambiarModulo("alquileres"));
         btnUsuarios.addActionListener(e -> cambiarModulo("usuarios"));
 
+        // ** Añadir botones
         panelNav.add(btnVehiculos);
         // createVerticalStrut -> espacio vacío de 8px entre botones.
         panelNav.add(Box.createVerticalStrut(8));
@@ -367,6 +368,7 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
+        // ** API
         // Panel conversor de divisas
         gbc.gridwidth = 2;
         // Celda con la conversión
@@ -390,11 +392,12 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridy = 12;
         panelFormulario.add(lblResultado, gbc);
 
-        // Botón para convertir
+        // ** Botón para convertir 
         JButton btnConvertir = crearBotonAccion("Convertir precio", COLOR_ACENTO_NARANJA);
         gbc.gridy = 13;
         panelFormulario.add(btnConvertir, gbc);
 
+        // Se necesita -> JButton, gbc.gridy con número no usado y panelFormulario.add
         btnConvertir.addActionListener(e -> {
             int fila = tabla.getSelectedRow();
             if (fila < 0) {
@@ -447,6 +450,7 @@ public class VentanaPrincipal extends JFrame {
         }
     }
 
+    // Mostrar Formulario Alquiler con JComboBox
     private void mostrarFormAlquiler(AlquilerDTO seleccionado) {
         panelFormulario.removeAll();
         panelFormulario.setLayout(new GridBagLayout());
@@ -462,7 +466,7 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridy = 0;
         panelFormulario.add(lblTitulo, gbc);
 
-        // --- Combo clientes ---
+        // --- Combo clientes (seleccionar nombres de clientes) ---
         java.util.List<Cliente> listaClientes = usuarioDAO.listarClientes();
         JComboBox<Cliente> cmbCliente = new JComboBox<>();
         for (Cliente c : listaClientes)
@@ -478,6 +482,7 @@ public class VentanaPrincipal extends JFrame {
                 return this;
             }
         });
+        
         cmbCliente.setBackground(COLOR_FONDO_TABLA);
         cmbCliente.setForeground(Color.WHITE);
 
@@ -502,6 +507,7 @@ public class VentanaPrincipal extends JFrame {
         panelFormulario.add(cmbCliente, gbc);
 
         // --- Combo vehículos ---
+
         // Lista que muestre solo los vehículos disponibles
         java.util.List<Vehiculo> listaVehiculos = vehiculoDAO.listarTodos()
                 .stream()
@@ -585,7 +591,7 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridx = 1;
         panelFormulario.add(cmbEstado, gbc);
 
-        // --- Cálculo automático del precio ---
+        // ** --- Cálculo automático del precio ---
         Runnable calcularPrecio = () -> {
             try {
                 Vehiculo v = (Vehiculo) cmbVehiculo.getSelectedItem();
