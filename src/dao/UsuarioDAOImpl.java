@@ -10,8 +10,8 @@ import java.util.List;
 
 public class UsuarioDAOImpl implements IUsuarioDAO {
 
-    // Convierte una fila del ResultSet en un objeto Usuario. 
-    // Se llama desde varios métodos del DAO, por lo que se usa 
+    // Convierte una fila del ResultSet en un objeto Usuario.
+    // Se llama desde varios métodos del DAO, por lo que se usa
     // para no repetir el mismo código de mapeo en cada uno.
     private Usuario mapearUsuario(ResultSet rs) throws SQLException {
         return new Usuario(
@@ -169,7 +169,8 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         }
     }
 
-    // Devuelve todos los usuarios de la base de datos como una lista de objetos Usuario.
+    // Devuelve todos los usuarios de la base de datos como una lista de objetos
+    // Usuario.
     @Override
     public List<Usuario> listarTodos() {
         List<Usuario> lista = new ArrayList<>();
@@ -183,6 +184,63 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
             }
         } catch (SQLException e) {
             System.err.println("Error al listar usuarios: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // Listar solo los usuarios con rol cliente (para los combos de alquileres)
+    @Override
+    public List<model.Cliente> listarClientes() {
+        List<model.Cliente> lista = new ArrayList<>();
+        String sql = "SELECT u.id, u.username, u.password, u.email, u.nombre, u.apellidos, u.dni, " +
+                "c.telefono, c.direccion, c.carnet_conducir " +
+                "FROM usuarios u JOIN clientes c ON u.id = c.usuario_id";
+        try (Connection con = ConexionDB.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(new model.Cliente(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("email"),
+                        rs.getString("nombre"),
+                        rs.getString("apellidos"),
+                        rs.getString("dni"),
+                        rs.getString("telefono"),
+                        rs.getString("direccion"),
+                        rs.getString("carnet_conducir")));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar clientes: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // Listar solo los usuarios con rol empleado (para los combos de alquileres)
+    @Override
+    public List<model.Empleado> listarEmpleados() {
+        List<model.Empleado> lista = new ArrayList<>();
+        String sql = "SELECT u.id, u.username, u.password, u.email, u.nombre, u.apellidos, u.dni, " +
+                "e.salario, e.fecha_alta " +
+                "FROM usuarios u JOIN empleados e ON u.id = e.usuario_id";
+        try (Connection con = ConexionDB.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(new model.Empleado(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("email"),
+                        rs.getString("nombre"),
+                        rs.getString("apellidos"),
+                        rs.getString("dni"),
+                        rs.getDouble("salario"),
+                        rs.getDate("fecha_alta").toLocalDate()));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar empleados: " + e.getMessage());
         }
         return lista;
     }

@@ -1,13 +1,17 @@
 package dao;
 
+import model.Cliente;
+import model.Empleado;
 import model.Usuario;
 import java.util.List;
 
 public interface IUsuarioDAO {
     Usuario validar(String username, String password);
-    void registrarCliente(model.Cliente cliente);
-    void registrarEmpleado(model.Empleado empleado);
+    void registrarCliente(Cliente cliente);
+    void registrarEmpleado(Empleado empleado);
     List<Usuario> listarTodos();
+    List<Cliente> listarClientes();
+    List<Empleado> listarEmpleados();
     void actualizar(Usuario usuario);
     void eliminar(int id);
 }

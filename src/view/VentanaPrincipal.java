@@ -4,9 +4,11 @@ import dao.AlquilerDAOImpl;
 import dao.VehiculoDAOImpl;
 import dao.UsuarioDAOImpl;
 import dto.AlquilerDTO;
+import model.Alquiler;
+import model.Cliente;
+import model.Empleado;
 import model.Usuario;
 import model.Vehiculo;
-import model.Alquiler;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -182,8 +184,14 @@ public class VentanaPrincipal extends JFrame {
         // PANEL FORMULARIO DERECHO
         panelFormulario = new JPanel();
         panelFormulario.setBackground(COLOR_FONDO_PANEL);
-        panelFormulario.setPreferredSize(new Dimension(230, 0));
-        panelPrincipal.add(panelFormulario, BorderLayout.EAST);
+        panelFormulario.setPreferredSize(new Dimension(260, 0));
+        JScrollPane scrollFormulario = new JScrollPane(panelFormulario,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollFormulario.setPreferredSize(new Dimension(260, 0));
+        scrollFormulario.setBorder(null);
+        scrollFormulario.getViewport().setBackground(COLOR_FONDO_PANEL);
+        panelPrincipal.add(scrollFormulario, BorderLayout.EAST);
 
         add(panelPrincipal);
 
@@ -439,13 +447,14 @@ public class VentanaPrincipal extends JFrame {
         }
     }
 
-    private void mostrarFormAlquiler(AlquilerDTO a) {
+    private void mostrarFormAlquiler(AlquilerDTO seleccionado) {
         panelFormulario.removeAll();
         panelFormulario.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 8, 5, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
 
         JLabel lblTitulo = new JLabel("Gestión Alquileres", SwingConstants.CENTER);
         lblTitulo.setForeground(COLOR_ACENTO_AZUL);
@@ -453,28 +462,120 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridy = 0;
         panelFormulario.add(lblTitulo, gbc);
 
-        gbc.gridwidth = 1;
-        JTextField txtClienteId = campo(gbc, panelFormulario, 1, "ID Cliente:");
-        JTextField txtVehiculoId = campo(gbc, panelFormulario, 2, "ID Vehículo:");
-        JTextField txtEmpleadoId = campo(gbc, panelFormulario, 3, "ID Empleado:");
+        // --- Combo clientes ---
+        java.util.List<Cliente> listaClientes = usuarioDAO.listarClientes();
+        JComboBox<Cliente> cmbCliente = new JComboBox<>();
+        for (Cliente c : listaClientes)
+            cmbCliente.addItem(c);
+        cmbCliente.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            public java.awt.Component getListCellRendererComponent(
+                    javax.swing.JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Cliente c)
+                    setText(c.getNombre() + " " + c.getApellidos());
+                setBackground(isSelected ? COLOR_ACENTO_AZUL : COLOR_FONDO_TABLA);
+                setForeground(Color.WHITE);
+                return this;
+            }
+        });
+        cmbCliente.setBackground(COLOR_FONDO_TABLA);
+        cmbCliente.setForeground(Color.WHITE);
 
-        // Si es cliente, ocultar ID Cliente e ID Empleado y rellenarlos automáticamente
         if (usuarioActual.getRol().equals("cliente")) {
-            txtClienteId.setText(String.valueOf(usuarioActual.getId()));
-            txtClienteId.setEnabled(false);
-            txtEmpleadoId.setText("");
-            txtEmpleadoId.setEnabled(false);
+            for (int i = 0; i < listaClientes.size(); i++) {
+                if (listaClientes.get(i).getId() == usuarioActual.getId()) {
+                    cmbCliente.setSelectedIndex(i);
+                    break;
+                }
+            }
+            cmbCliente.setEnabled(false);
         }
 
-        JTextField txtInicio = campo(gbc, panelFormulario, 4, "Inicio(yyyy-mm-dd):");
-        JTextField txtFin = campo(gbc, panelFormulario, 5, "Fin(yyyy-mm-dd):");
-        JTextField txtTotal = campo(gbc, panelFormulario, 6, "Total €:");
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JLabel lblCliente = new JLabel("Cliente:");
+        lblCliente.setForeground(Color.WHITE);
+        lblCliente.setFont(new Font("Garamond", Font.PLAIN, 12));
+        panelFormulario.add(lblCliente, gbc);
+        gbc.gridx = 1;
+        panelFormulario.add(cmbCliente, gbc);
 
-        String[] estados = { "activo", "finalizado", "cancelado" };
-        JComboBox<String> cmbEstado = new JComboBox<>(estados);
+        // --- Combo vehículos ---
+        // Lista que muestre solo los vehículos disponibles
+        java.util.List<Vehiculo> listaVehiculos = vehiculoDAO.listarTodos()
+                .stream()
+                .filter(Vehiculo::isDisponible)
+                .collect(java.util.stream.Collectors.toList());
+        JComboBox<Vehiculo> cmbVehiculo = new JComboBox<>();
+        for (Vehiculo v : listaVehiculos)
+            cmbVehiculo.addItem(v);
+        cmbVehiculo.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            public java.awt.Component getListCellRendererComponent(
+                    javax.swing.JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Vehiculo v)
+                    setText(v.getMarca() + " " + v.getModelo() + " (" + v.getMatricula() + ")"
+                            + (v.isDisponible() ? "" : " — no disponible"));
+                setBackground(isSelected ? COLOR_ACENTO_AZUL : COLOR_FONDO_TABLA);
+                setForeground(Color.WHITE);
+                return this;
+            }
+        });
+        cmbVehiculo.setBackground(COLOR_FONDO_TABLA);
+        cmbVehiculo.setForeground(Color.WHITE);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JLabel lblVehiculo = new JLabel("Vehículo:");
+        lblVehiculo.setForeground(Color.WHITE);
+        lblVehiculo.setFont(new Font("Garamond", Font.PLAIN, 12));
+        panelFormulario.add(lblVehiculo, gbc);
+        gbc.gridx = 1;
+        panelFormulario.add(cmbVehiculo, gbc);
+
+        // --- Combo empleados ---
+        java.util.List<Empleado> listaEmpleados = usuarioDAO.listarEmpleados();
+        JComboBox<Object> cmbEmpleado = new JComboBox<>();
+        cmbEmpleado.addItem("Sin empleado");
+        for (Empleado emp : listaEmpleados)
+            cmbEmpleado.addItem(emp);
+        cmbEmpleado.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            public java.awt.Component getListCellRendererComponent(
+                    javax.swing.JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Empleado emp)
+                    setText(emp.getNombre() + " " + emp.getApellidos());
+                setBackground(isSelected ? COLOR_ACENTO_AZUL : COLOR_FONDO_TABLA);
+                setForeground(Color.WHITE);
+                return this;
+            }
+        });
+        cmbEmpleado.setBackground(COLOR_FONDO_TABLA);
+        cmbEmpleado.setForeground(Color.WHITE);
+        if (usuarioActual.getRol().equals("cliente"))
+            cmbEmpleado.setEnabled(false);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        JLabel lblEmpleado = new JLabel("Empleado:");
+        lblEmpleado.setForeground(Color.WHITE);
+        lblEmpleado.setFont(new Font("Garamond", Font.PLAIN, 12));
+        panelFormulario.add(lblEmpleado, gbc);
+        gbc.gridx = 1;
+        panelFormulario.add(cmbEmpleado, gbc);
+
+        // --- Fechas y precio ---
+        JTextField txtInicio = campo(gbc, panelFormulario, 4, "Inicio (yyyy-mm-dd):");
+        JTextField txtFin = campo(gbc, panelFormulario, 5, "Fin (yyyy-mm-dd):");
+        JTextField txtTotal = campo(gbc, panelFormulario, 6, "Total €:");
+        txtTotal.setEditable(false);
+        txtTotal.setBackground(COLOR_FONDO_TABLA.darker());
+
+        // --- Combo estado ---
+        JComboBox<String> cmbEstado = new JComboBox<>(new String[] { "activo", "finalizado", "cancelado" });
         cmbEstado.setBackground(COLOR_FONDO_TABLA);
         cmbEstado.setForeground(Color.WHITE);
-        gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 7;
         JLabel lblEstado = new JLabel("Estado:");
@@ -484,67 +585,21 @@ public class VentanaPrincipal extends JFrame {
         gbc.gridx = 1;
         panelFormulario.add(cmbEstado, gbc);
 
-        registrarListenerTabla(e -> {
-            int fila = tabla.getSelectedRow();
-            if (fila >= 0 && moduloActivo.equals("alquileres")) {
-                // Recuperar el ID del alquiler para buscar los datos completos
-                int idAlquiler = (int) modeloTabla.getValueAt(fila, 0);
-                Alquiler alq = alquilerDAO.buscarPorId(idAlquiler);
-                if (alq != null) {
-                    txtClienteId.setText(String.valueOf(alq.getClienteId()));
-                    txtVehiculoId.setText(String.valueOf(alq.getVehiculoId()));
-                    txtEmpleadoId.setText(alq.getEmpleadoId() != null ? String.valueOf(alq.getEmpleadoId()) : "");
-                }
-                txtInicio.setText(modeloTabla.getValueAt(fila, 4).toString());
-                txtFin.setText(modeloTabla.getValueAt(fila, 5).toString());
-                txtTotal.setText(modeloTabla.getValueAt(fila, 6).toString());
-                cmbEstado.setSelectedItem(modeloTabla.getValueAt(fila, 7).toString());
-            }
-        });
-
-        // Mejora: Calcular precio automáticamente cuando cambian las fechas
+        // --- Cálculo automático del precio ---
         Runnable calcularPrecio = () -> {
             try {
-                double precioDia = 0;
-
-                String idTexto = txtVehiculoId.getText().trim();
-                if (!idTexto.isEmpty()) {
-                    int idVehiculo = Integer.parseInt(idTexto);
-                    for (Vehiculo v : vehiculoDAO.listarTodos()) {
-                        if (v.getId() == idVehiculo) {
-                            precioDia = v.getPrecioDia();
-                            break;
-                        }
-                    }
-                } else {
-                    int fila = tabla.getSelectedRow();
-                    if (fila >= 0) {
-                        String matriculaYModelo = modeloTabla.getValueAt(fila, 2).toString();
-                        for (Vehiculo v : vehiculoDAO.listarTodos()) {
-                            if (matriculaYModelo.contains(v.getMatricula())) {
-                                precioDia = v.getPrecioDia();
-                                break;
-                            }
-                        }
-                    }
-                }
-
+                Vehiculo v = (Vehiculo) cmbVehiculo.getSelectedItem();
                 LocalDate inicio = LocalDate.parse(txtInicio.getText().trim());
                 LocalDate fin = LocalDate.parse(txtFin.getText().trim());
                 long dias = java.time.temporal.ChronoUnit.DAYS.between(inicio, fin);
-                if (dias > 0 && precioDia > 0) {
-                    txtTotal.setText(String.valueOf(dias * precioDia));
+                if (dias > 0 && v != null) {
+                    txtTotal.setText(String.format("%.2f", dias * v.getPrecioDia()));
                 }
             } catch (Exception ignored) {
             }
         };
 
-        // Los tres FocusListeners van aquí, fuera del Runnable
-        txtVehiculoId.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent e) {
-                calcularPrecio.run();
-            }
-        });
+        cmbVehiculo.addActionListener(e -> calcularPrecio.run());
         txtInicio.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent e) {
                 calcularPrecio.run();
@@ -556,12 +611,49 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
+        // --- Listener de selección en tabla ---
+        registrarListenerTabla(e -> {
+            int fila = tabla.getSelectedRow();
+            if (fila >= 0 && moduloActivo.equals("alquileres")) {
+                int idAlquiler = (int) modeloTabla.getValueAt(fila, 0);
+                Alquiler alq = alquilerDAO.buscarPorId(idAlquiler);
+                if (alq == null)
+                    return;
+
+                for (int i = 0; i < listaClientes.size(); i++) {
+                    if (listaClientes.get(i).getId() == alq.getClienteId()) {
+                        cmbCliente.setSelectedIndex(i);
+                        break;
+                    }
+                }
+                for (int i = 0; i < listaVehiculos.size(); i++) {
+                    if (listaVehiculos.get(i).getId() == alq.getVehiculoId()) {
+                        cmbVehiculo.setSelectedIndex(i);
+                        break;
+                    }
+                }
+                if (alq.getEmpleadoId() == null) {
+                    cmbEmpleado.setSelectedIndex(0);
+                } else {
+                    for (int i = 0; i < listaEmpleados.size(); i++) {
+                        if (listaEmpleados.get(i).getId() == alq.getEmpleadoId()) {
+                            cmbEmpleado.setSelectedIndex(i + 1);
+                            break;
+                        }
+                    }
+                }
+                txtInicio.setText(alq.getFechaInicio().toString());
+                txtFin.setText(alq.getFechaFin().toString());
+                txtTotal.setText(String.valueOf(alq.getPrecioTotal()));
+                cmbEstado.setSelectedItem(alq.getEstado());
+            }
+        });
+
+        // --- Botones ---
         gbc.gridwidth = 2;
         JButton btnNuevo = crearBotonAccion("Nuevo", COLOR_ACENTO_AZUL);
         JButton btnGuardar = crearBotonAccion("Guardar", COLOR_ACENTO_VERDE);
         JButton btnEliminar = crearBotonAccion("Eliminar", COLOR_ACENTO_ROJO);
-
-        // Restricción: desactiva el botón eliminar si es cliente
         btnEliminar.setEnabled(usuarioActual.getRol().equals("empleado"));
 
         gbc.gridy = 8;
@@ -572,55 +664,59 @@ public class VentanaPrincipal extends JFrame {
         panelFormulario.add(btnEliminar, gbc);
 
         btnNuevo.addActionListener(e -> {
+            tabla.clearSelection();
+            if (!listaClientes.isEmpty())
+                cmbCliente.setSelectedIndex(0);
             if (usuarioActual.getRol().equals("cliente")) {
-                txtClienteId.setText(String.valueOf(usuarioActual.getId()));
-            } else {
-                txtClienteId.setText("");
+                for (int i = 0; i < listaClientes.size(); i++) {
+                    if (listaClientes.get(i).getId() == usuarioActual.getId()) {
+                        cmbCliente.setSelectedIndex(i);
+                        break;
+                    }
+                }
             }
-            txtVehiculoId.setText("");
-            txtEmpleadoId.setText("");
+            if (!listaVehiculos.isEmpty())
+                cmbVehiculo.setSelectedIndex(0);
+            cmbEmpleado.setSelectedIndex(0);
             txtInicio.setText(LocalDate.now().toString());
             txtFin.setText("");
             txtTotal.setText("");
-            tabla.clearSelection();
+            cmbEstado.setSelectedIndex(0);
             cargarTablaAlquileres();
         });
 
-        // RESTRICCIÓN: Si el vehículo no está disponible, no deja crear un alquiler
-        // nuevo
         btnGuardar.addActionListener(e -> {
             try {
                 int fila = tabla.getSelectedRow();
-                if (fila < 0) {
-                    int idVehiculo = Integer.parseInt(txtVehiculoId.getText().trim());
-                    Vehiculo v = null;
-                    for (Vehiculo veh : vehiculoDAO.listarTodos()) {
-                        if (veh.getId() == idVehiculo) {
-                            v = veh;
-                            break;
-                        }
-                    }
-                    if (v == null) {
-                        JOptionPane.showMessageDialog(this, "El vehículo no existe.", "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    if (!v.isDisponible()) {
-                        JOptionPane.showMessageDialog(this, "Ese vehículo no está disponible.", "Aviso",
-                                JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
+                Cliente clienteSeleccionado = (Cliente) cmbCliente.getSelectedItem();
+                Vehiculo vehiculoSeleccionado = (Vehiculo) cmbVehiculo.getSelectedItem();
+
+                if (clienteSeleccionado == null || vehiculoSeleccionado == null) {
+                    JOptionPane.showMessageDialog(this, "Selecciona cliente y vehículo.", "Aviso",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
+                if (fila < 0 && !vehiculoSeleccionado.isDisponible()) {
+                    JOptionPane.showMessageDialog(this, "Ese vehículo no está disponible.", "Aviso",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                Integer empleadoId = null;
+                Object empSeleccionado = cmbEmpleado.getSelectedItem();
+                if (empSeleccionado instanceof Empleado emp)
+                    empleadoId = emp.getId();
+
                 Alquiler alq = new Alquiler(
                         fila >= 0 ? (int) modeloTabla.getValueAt(fila, 0) : 0,
-                        Integer.parseInt(txtClienteId.getText().trim()),
-                        Integer.parseInt(txtVehiculoId.getText().trim()),
-                        txtEmpleadoId.getText().trim().isEmpty() ? null
-                                : Integer.parseInt(txtEmpleadoId.getText().trim()),
+                        clienteSeleccionado.getId(),
+                        vehiculoSeleccionado.getId(),
+                        empleadoId,
                         LocalDate.parse(txtInicio.getText().trim()),
                         LocalDate.parse(txtFin.getText().trim()),
-                        Double.parseDouble(txtTotal.getText().trim()),
+                        Double.parseDouble(txtTotal.getText().trim().replace(",", ".")),
                         (String) cmbEstado.getSelectedItem());
+
                 if (fila >= 0) {
                     alquilerDAO.actualizar(alq);
                     JOptionPane.showMessageDialog(this, "Alquiler actualizado.");
@@ -630,7 +726,9 @@ public class VentanaPrincipal extends JFrame {
                 }
                 cargarTablaAlquileres();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
         });
 
